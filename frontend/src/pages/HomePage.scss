@@ -1,0 +1,20 @@
+@use "../styles/colors.scss" as *;
+
+.home-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: $background;
+  padding-top: 80px;
+  h1 {
+    color: $primary;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+  p {
+    color: $text-light;
+    font-size: 1.2rem;
+  }
+}
