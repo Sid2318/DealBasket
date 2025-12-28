@@ -3,6 +3,9 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
 import authRoutes from "./routes/authRoutes.js";
+import productRoutes from "./routes/productRoutes.js";
+import priceRoutes from "./routes/priceRoutes.js";
+import myHistoryRoutes from "./routes/myHistoryRoutes.js";
 import connectDB from "./config/db.js";
 
 dotenv.config();
@@ -18,6 +21,9 @@ connectDB();
 
 // Routes
 app.use("/auth", authRoutes);
+app.use("/products", productRoutes);
+app.use("/prices", priceRoutes);
+app.use("/myhistory", myHistoryRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port http://localhost:${PORT}`);

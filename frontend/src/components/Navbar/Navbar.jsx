@@ -47,7 +47,12 @@ const Navbar = () => {
           <li>
             <Link to="/">Home</Link>
           </li>
-          {/* Add more links as needed */}
+          <li>
+            <Link to="/history">History</Link>
+          </li>
+          <li>
+            <Link to="/dashboard">Dashboard</Link>
+          </li>
         </ul>
         <div className="navbar__auth">
           {isLoggedIn ? (

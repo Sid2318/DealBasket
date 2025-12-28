@@ -13,8 +13,6 @@ const SignUpPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
 
   // Handle input change
@@ -135,48 +133,28 @@ const SignUpPage = () => {
 
           <div className="input-group">
             <label htmlFor="password">Password</label>
-            <div className="password-wrapper">
-              <input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                name="password"
-                placeholder="Create a password"
-                value={formData.password}
-                onChange={handleChange}
-                disabled={loading}
-              />
-              <button
-                type="button"
-                className="toggle-password"
-                onClick={() => setShowPassword(!showPassword)}
-                tabIndex="-1"
-              >
-                {showPassword ? "👀" : "🫣"}
-              </button>
-            </div>
+            <input
+              id="password"
+              type="password"
+              name="password"
+              placeholder="Create a password"
+              value={formData.password}
+              onChange={handleChange}
+              disabled={loading}
+            />
           </div>
 
           <div className="input-group">
             <label htmlFor="confirmPassword">Confirm Password</label>
-            <div className="password-wrapper">
-              <input
-                id="confirmPassword"
-                type={showConfirmPassword ? "text" : "password"}
-                name="confirmPassword"
-                placeholder="Confirm your password"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                disabled={loading}
-              />
-              <button
-                type="button"
-                className="toggle-password"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                tabIndex="-1"
-              >
-                {showConfirmPassword ? "👀" : "🫣"}
-              </button>
-            </div>
+            <input
+              id="confirmPassword"
+              type="password"
+              name="confirmPassword"
+              placeholder="Confirm your password"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              disabled={loading}
+            />
           </div>
 
           <button type="submit" className="submit-btn" disabled={loading}>

@@ -31,6 +31,9 @@ export const protect = async (req, res, next) => {
   }
 };
 
+// Export as named export
+export const authMiddleware = protect;
+
 // Do you have a pass? → Check header
 // Is the pass real? → Verify JWT
 // Who owns this pass? → Fetch user from DB
