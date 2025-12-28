@@ -35,6 +35,10 @@ const myHistorySchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    productUrl: {
+      type: String,
+      required: true,
+    },
     purchasedAt: {
       type: Date,
       default: Date.now,

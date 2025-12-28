@@ -3,10 +3,10 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
 import authRoutes from "./routes/authRoutes.js";
-import productRoutes from "./routes/productRoutes.js";
-import priceRoutes from "./routes/priceRoutes.js";
 import myHistoryRoutes from "./routes/myHistoryRoutes.js";
+import scrapingRoutes from "./routes/scrapingRoutes.js";
 import connectDB from "./config/db.js";
+import { initializeCronJobs } from "./scrapers/cronScraper.js";
 
 dotenv.config();
 
@@ -19,11 +19,13 @@ const PORT = process.env.PORT || 5000;
 // Connect to MongoDB
 connectDB();
 
+// Initialize cron jobs for scraping
+initializeCronJobs();
+
 // Routes
 app.use("/auth", authRoutes);
-app.use("/products", productRoutes);
-app.use("/prices", priceRoutes);
 app.use("/myhistory", myHistoryRoutes);
+app.use("/api/scrape", scrapingRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port http://localhost:${PORT}`);
