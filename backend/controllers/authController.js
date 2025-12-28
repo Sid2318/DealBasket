@@ -33,6 +33,7 @@ export const signup = async (req, res) => {
 export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
+        console.log("Login attempt for email:", email);
 
         // Find user
         const user = await User.findOne({ email });
@@ -53,12 +54,15 @@ export const login = async (req, res) => {
             { expiresIn: "1d" }
         );
 
+        console.log("Login successful for user:", user.email);
+
         res.json({
             message: "Login successful",
             token
         });
 
     } catch (error) {
+        console.error("Login error:", error);
         res.status(500).json({ message: "Login failed" });
     }
 };
