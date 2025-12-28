@@ -1,9 +1,23 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./ProfileDrawer.scss";
 
 const ProfileDrawer = ({ isOpen, onClose, onLogout }) => {
   const navigate = useNavigate();
+  const [user, setUser] = useState({ name: "User", email: "user@example.com" });
+
+  useEffect(() => {
+    // Get user data from localStorage
+    const userData = localStorage.getItem("user");
+    if (userData) {
+      try {
+        const parsedUser = JSON.parse(userData);
+        setUser(parsedUser);
+      } catch (error) {
+        console.error("Error parsing user data:", error);
+      }
+    }
+  }, [isOpen]);
 
   const handleLogout = () => {
     onLogout();
@@ -28,8 +42,8 @@ const ProfileDrawer = ({ isOpen, onClose, onLogout }) => {
           <div className="profile-info">
             <div className="profile-avatar">👤</div>
             <div className="profile-details">
-              <p className="profile-name">User</p>
-              <p className="profile-email">user@example.com</p>
+              <p className="profile-name">{user.name}</p>
+              <p className="profile-email">{user.email}</p>
             </div>
           </div>
 

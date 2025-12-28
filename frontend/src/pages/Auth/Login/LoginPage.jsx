@@ -18,6 +18,7 @@ const LoginPage = () => {
     try {
       const data = await loginUser({ email, password });
       localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
       console.log(data);
 
       // Dispatch custom event to update navbar
