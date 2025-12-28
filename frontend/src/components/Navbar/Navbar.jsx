@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Navbar.scss";
-import ProfileDrawer from "./ProfileDrawer";
+import ProfileDrawer from "../ProfileDrawer/ProfileDrawer";
 
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);

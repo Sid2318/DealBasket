@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./LoginPage.scss";
-import { loginUser } from "../api/authApi";
+import { loginUser } from "../../../api/authApi";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -75,7 +75,7 @@ const LoginPage = () => {
                 onClick={() => setShowPassword(!showPassword)}
                 tabIndex="-1"
               >
-                {showPassword ? "👁️" : "👁️‍🗨️"}
+                {showPassword ? "👀" : "🫣"}
               </button>
             </div>
           </div>

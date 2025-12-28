@@ -151,7 +151,7 @@ const SignUpPage = () => {
                 onClick={() => setShowPassword(!showPassword)}
                 tabIndex="-1"
               >
-                {showPassword ? "👁️" : "👁️‍🗨️"}
+                {showPassword ? "👀" : "🫣"}
               </button>
             </div>
           </div>
@@ -174,7 +174,7 @@ const SignUpPage = () => {
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 tabIndex="-1"
               >
-                {showConfirmPassword ? "👁️" : "👁️‍🗨️"}
+                {showConfirmPassword ? "👀" : "🫣"}
               </button>
             </div>
           </div>
