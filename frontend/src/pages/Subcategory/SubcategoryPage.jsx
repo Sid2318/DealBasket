@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getProductsBySubcategory } from "../../api/productApi";
+import { getProductsBySubcategory, getAllProducts } from "../../api/productApi";
 import "./SubcategoryPage.scss";
 
 const SubcategoryPage = () => {
   const { subcategory } = useParams();
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Filter and sort states
+  const [priceRange, setPriceRange] = useState([0, 200000]);
+  const [maxPrice, setMaxPrice] = useState(200000);
+  const [sortOrder, setSortOrder] = useState("none");
 
   // Website icons mapping - using local images
   const websiteIcons = {
@@ -17,15 +23,55 @@ const SubcategoryPage = () => {
     bigbasket: "/images/websites/bigbasket.png",
   };
 
+  // Parse price string to number
+  const parsePrice = (priceString) => {
+    if (!priceString) return 0;
+    return parseInt(priceString.replace(/[₹,]/g, ""));
+  };
+
   useEffect(() => {
     fetchProducts();
   }, [subcategory]);
 
+  useEffect(() => {
+    applyFiltersAndSort();
+  }, [products, priceRange, sortOrder]);
+
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const data = await getProductsBySubcategory(subcategory);
+
+      let data;
+      if (subcategory === "bestDeals") {
+        // Fetch all products for best deals
+        const allProducts = await getAllProducts();
+
+        // Filter products with valid discounts and sort by discount percentage
+        data = allProducts
+          .filter((product) => {
+            const discount = product.discount;
+            return discount && discount !== "0%" && discount !== "null";
+          })
+          .map((product) => ({
+            ...product,
+            discountValue: parseInt(product.discount.replace("%", "")) || 0,
+          }))
+          .sort((a, b) => b.discountValue - a.discountValue);
+      } else {
+        // Normal subcategory fetch
+        data = await getProductsBySubcategory(subcategory);
+      }
+
       setProducts(data);
+
+      // Calculate max price from products
+      if (data.length > 0) {
+        const prices = data.map((p) => parsePrice(p.discountedPrice));
+        const max = Math.max(...prices);
+        setMaxPrice(max);
+        setPriceRange([0, max]);
+      }
+
       setError(null);
     } catch (err) {
       console.error("Error fetching products:", err);
@@ -33,6 +79,34 @@ const SubcategoryPage = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const applyFiltersAndSort = () => {
+    let filtered = [...products];
+
+    // Filter by price range
+    filtered = filtered.filter((product) => {
+      const price = parsePrice(product.discountedPrice);
+      return price >= priceRange[0] && price <= priceRange[1];
+    });
+
+    // Sort by price
+    if (sortOrder === "lowToHigh") {
+      filtered.sort(
+        (a, b) => parsePrice(a.discountedPrice) - parsePrice(b.discountedPrice)
+      );
+    } else if (sortOrder === "highToLow") {
+      filtered.sort(
+        (a, b) => parsePrice(b.discountedPrice) - parsePrice(a.discountedPrice)
+      );
+    }
+
+    setFilteredProducts(filtered);
+  };
+
+  const handlePriceChange = (e) => {
+    const value = parseInt(e.target.value);
+    setPriceRange([0, value]);
   };
 
   if (loading) {
@@ -57,12 +131,45 @@ const SubcategoryPage = () => {
         <button className="back-btn" onClick={() => navigate(-1)}>
           ← Back
         </button>
-        <h1>{subcategory.charAt(0).toUpperCase() + subcategory.slice(1)}</h1>
-        <p>{products.length} products found</p>
+        <h1>
+          {subcategory === "bestDeals"
+            ? "🔥 Best Deals"
+            : subcategory.charAt(0).toUpperCase() + subcategory.slice(1)}
+        </h1>
+        <p>{filteredProducts.length} products found</p>
+      </div>
+
+      <div className="filters-section">
+        <div className="filter-group">
+          <label>
+            Price Range: ₹0 - ₹{priceRange[1].toLocaleString("en-IN")}
+          </label>
+          <input
+            type="range"
+            min="0"
+            max={maxPrice}
+            value={priceRange[1]}
+            onChange={handlePriceChange}
+            className="price-slider"
+          />
+        </div>
+
+        <div className="filter-group">
+          <label>Sort By:</label>
+          <select
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value)}
+            className="sort-select"
+          >
+            <option value="none">None</option>
+            <option value="lowToHigh">Price: Low to High</option>
+            <option value="highToLow">Price: High to Low</option>
+          </select>
+        </div>
       </div>
 
       <div className="products-grid">
-        {products.map((product) => (
+        {filteredProducts.map((product) => (
           <div
             key={product._id}
             className="product-card"

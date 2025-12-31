@@ -1,11 +1,13 @@
 const CATEGORY_DATA = {
-  all:[
+  all: [
     "electronics",
     "fashion",
     "LifeStyle",
     "Beauty",
     "groceries",
+    "bestDeals",
   ],
+  bestDeals: ["bestDeals"],
   electronics: [
     "mobiles",
     "laptops",

@@ -1,5 +1,7 @@
 const SUBCATEGORY_IMAGES = {
   // Main Categories
+  bestDeals:
+    "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=400&h=400&fit=crop&auto=format",
   electronics: "/images/categories/electronics.avif",
   fashion:
     "https://images.unsplash.com/photo-1445205170230-053b83016050?w=400&h=400&fit=crop&auto=format",
