@@ -20,18 +20,22 @@ const productSchema = new mongoose.Schema(
     },
     image: {
       type: String,
+      required: true,
     },
     quantity: {
       type: String,
     },
     actualPrice: {
       type: String,
+      required: true,
     },
     discountedPrice: {
       type: String,
+      required: true,
     },
     discount: {
       type: String,
+      required: true,
     },
     details: {
       type: [String],
@@ -39,6 +43,7 @@ const productSchema = new mongoose.Schema(
     },
     link: {
       type: String,
+      required: true,
     },
   },
   { timestamps: true }

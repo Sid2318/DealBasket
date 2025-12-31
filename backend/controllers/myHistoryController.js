@@ -3,15 +3,34 @@ import MyHistory from "../models/MyHistory.js";
 // Save purchase to history
 export const savePurchase = async (req, res) => {
   try {
+    console.log("Received purchase request:", req.body);
+
     const {
       productId,
       productName,
-      storeId,
-      storeName,
+      productImage,
+      website,
+      category,
+      subcategory,
       originalPrice,
       finalPrice,
       savedAmount,
+      discount,
     } = req.body;
+
+    // Validate required fields
+    if (
+      !productId ||
+      !productName ||
+      !website ||
+      originalPrice === undefined ||
+      finalPrice === undefined
+    ) {
+      return res.status(400).json({
+        message: "Missing required fields",
+        received: req.body,
+      });
+    }
 
     // Get userId from authenticated user (req.user is set by auth middleware)
     const userId = req.user?._id || "guest";
@@ -20,18 +39,24 @@ export const savePurchase = async (req, res) => {
       userId,
       productId,
       productName,
-      storeId,
-      storeName,
+      productImage,
+      website,
+      category,
+      subcategory,
       originalPrice,
       finalPrice,
       savedAmount,
+      discount,
     });
+
+    console.log("Purchase saved successfully:", purchase);
 
     res.status(201).json({
       message: "Purchase saved successfully",
       purchase,
     });
   } catch (error) {
+    console.error("Error in savePurchase:", error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -60,12 +85,17 @@ export const getTotalSavings = async (req, res) => {
       (total, item) => total + item.savedAmount,
       0
     );
+    const totalSpent = history.reduce(
+      (total, item) => total + item.finalPrice,
+      0
+    );
     const totalPurchases = history.length;
     const averageSavings =
       totalPurchases > 0 ? totalSavings / totalPurchases : 0;
 
     res.json({
       totalSavings,
+      totalSpent,
       totalPurchases,
       averageSavings: Math.round(averageSavings),
     });

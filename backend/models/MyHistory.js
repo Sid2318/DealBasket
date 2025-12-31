@@ -3,9 +3,9 @@ import mongoose from "mongoose";
 const myHistorySchema = new mongoose.Schema(
   {
     userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      type: String,
       required: true,
+      default: "guest",
     },
     productId: {
       type: String,
@@ -15,13 +15,18 @@ const myHistorySchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    storeId: {
+    productImage: {
+      type: String,
+    },
+    website: {
       type: String,
       required: true,
     },
-    storeName: {
+    category: {
       type: String,
-      required: true,
+    },
+    subcategory: {
+      type: String,
     },
     originalPrice: {
       type: Number,
@@ -34,6 +39,9 @@ const myHistorySchema = new mongoose.Schema(
     savedAmount: {
       type: Number,
       required: true,
+    },
+    discount: {
+      type: String,
     },
     purchasedAt: {
       type: Date,

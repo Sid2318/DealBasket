@@ -3,7 +3,7 @@
 .subcategory-page {
   min-height: 100vh;
   padding: 100px 2rem 2rem;
-  background: $background;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
 
   .loading,
   .error {
@@ -136,17 +136,15 @@
       background: $white;
       border-radius: 16px;
       overflow: hidden;
-      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-      transition: all 0.3s;
-      cursor: pointer;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+        border: 1px solid transparent;
 
-      &:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
-      }
-
-      .product-image {
-        position: relative;
+        &:hover {
+          transform: translateY(-12px) scale(1.02);
+          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+          border-color: rgba(108, 99, 255, 0.3);
         width: 100%;
         height: 280px;
         background: #f8f9fa;
@@ -246,6 +244,30 @@
 
           .reviews {
             color: $text-light;
+          }
+        }
+
+        .buy-btn {
+          width: 100%;
+          padding: 0.75rem;
+          background: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
+          color: $white;
+          border: none;
+          border-radius: 8px;
+          font-size: 1rem;
+          font-weight: 700;
+          cursor: pointer;
+          transition: all 0.3s;
+          margin-top: 0.75rem;
+          box-shadow: 0 2px 8px rgba(108, 99, 255, 0.3);
+
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(108, 99, 255, 0.5);
+          }
+
+          &:active {
+            transform: translateY(0);
           }
         }
       }

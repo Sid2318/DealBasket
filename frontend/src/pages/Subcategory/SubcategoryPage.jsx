@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getProductsBySubcategory, getAllProducts } from "../../api/productApi";
+import { savePurchase } from "../../api/historyApi";
 import "./SubcategoryPage.scss";
 
 const SubcategoryPage = () => {
@@ -109,6 +110,51 @@ const SubcategoryPage = () => {
     setPriceRange([0, value]);
   };
 
+  const handleBuyNow = async (e, product) => {
+    e.stopPropagation(); // Prevent navigation to product details
+
+    try {
+      const originalPrice = parsePrice(product.actualPrice);
+      const finalPrice = parsePrice(product.discountedPrice);
+      const savedAmount = originalPrice - finalPrice;
+
+      const purchaseData = {
+        productId: product._id,
+        productName: product.name,
+        productImage: product.image,
+        website: product.website,
+        category: product.category,
+        subcategory: product.subcategory,
+        originalPrice,
+        finalPrice,
+        savedAmount,
+        discount: product.discount,
+      };
+
+      console.log("Sending purchase data:", purchaseData);
+      const response = await savePurchase(purchaseData);
+      console.log("Purchase response:", response);
+
+      alert(
+        `✅ Purchase saved! You saved ₹${savedAmount.toLocaleString("en-IN")}!`
+      );
+    } catch (error) {
+      console.error("Error saving purchase:", error);
+      console.error("Error response:", error.response?.data);
+      alert(
+        `Failed to save purchase: ${
+          error.response?.data?.message || error.message
+        }`
+      );
+    }
+  };
+
+  const handleProductClick = (product) => {
+    if (product.link) {
+      window.open(product.link, "_blank");
+    }
+  };
+
   if (loading) {
     return (
       <div className="subcategory-page">
@@ -173,7 +219,7 @@ const SubcategoryPage = () => {
           <div
             key={product._id}
             className="product-card"
-            onClick={() => navigate(`/product/${product._id}`)}
+            onClick={() => handleProductClick(product)}
           >
             <div className="product-image">
               <img src={product.image} alt={product.name} />
@@ -208,6 +254,12 @@ const SubcategoryPage = () => {
                   <span className="reviews">({product.details[3]})</span>
                 </div>
               )}
+              <button
+                className="buy-btn"
+                onClick={(e) => handleBuyNow(e, product)}
+              >
+                Buy Now
+              </button>
             </div>
           </div>
         ))}

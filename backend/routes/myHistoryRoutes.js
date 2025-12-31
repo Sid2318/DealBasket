@@ -8,13 +8,14 @@ import { authMiddleware } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
-// Save purchase (protected route)
-router.post("/save", authMiddleware, savePurchase);
+// Save purchase (unprotected for guest users)
+router.post("/purchase", savePurchase);
+router.post("/save", savePurchase);
 
-// Get user's purchase history (protected route)
-router.get("/", authMiddleware, getMyHistory);
+// Get user's purchase history (unprotected for guest users)
+router.get("/", getMyHistory);
 
-// Get total savings (protected route)
-router.get("/total-savings", authMiddleware, getTotalSavings);
+// Get total savings (unprotected for guest users)
+router.get("/total-savings", getTotalSavings);
 
 export default router;

@@ -5,6 +5,7 @@ import "./Dashboard.scss";
 
 const Dashboard = () => {
   const [totalSavings, setTotalSavings] = useState(0);
+  const [totalSpent, setTotalSpent] = useState(0);
   const [totalPurchases, setTotalPurchases] = useState(0);
   const [averageSavings, setAverageSavings] = useState(0);
   const [recentPurchases, setRecentPurchases] = useState([]);
@@ -20,6 +21,7 @@ const Dashboard = () => {
       // Fetch total savings
       const savingsResponse = await api.get("/myhistory/total-savings");
       setTotalSavings(savingsResponse.data.totalSavings);
+      setTotalSpent(savingsResponse.data.totalSpent);
       setTotalPurchases(savingsResponse.data.totalPurchases);
       setAverageSavings(savingsResponse.data.averageSavings);
 
@@ -55,7 +57,17 @@ const Dashboard = () => {
           <div className="stat-icon">💰</div>
           <div className="stat-info">
             <h3>Total Savings</h3>
-            <p className="stat-value">₹{totalSavings}</p>
+            <p className="stat-value">
+              ₹{totalSavings.toLocaleString("en-IN")}
+            </p>
+          </div>
+        </div>
+
+        <div className="stat-card total-spent">
+          <div className="stat-icon">💳</div>
+          <div className="stat-info">
+            <h3>Total Spent</h3>
+            <p className="stat-value">₹{totalSpent.toLocaleString("en-IN")}</p>
           </div>
         </div>
 
@@ -71,7 +83,9 @@ const Dashboard = () => {
           <div className="stat-icon">📊</div>
           <div className="stat-info">
             <h3>Average Savings</h3>
-            <p className="stat-value">₹{averageSavings}</p>
+            <p className="stat-value">
+              ₹{averageSavings.toLocaleString("en-IN")}
+            </p>
           </div>
         </div>
       </div>
