@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getProductsBySubcategory, getAllProducts } from "../../api/productApi";
 import { savePurchase } from "../../api/historyApi";
+import LoginModal from "../../components/LoginModal/LoginModal";
 import "./SubcategoryPage.scss";
 
 const SubcategoryPage = () => {
@@ -11,6 +12,7 @@ const SubcategoryPage = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   // Filter and sort states
   const [priceRange, setPriceRange] = useState([0, 200000]);
@@ -113,6 +115,13 @@ const SubcategoryPage = () => {
   const handleBuyNow = async (e, product) => {
     e.stopPropagation(); // Prevent navigation to product details
 
+    // Check if user is logged in
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setShowLoginModal(true);
+      return;
+    }
+
     try {
       const originalPrice = parsePrice(product.actualPrice);
       const finalPrice = parsePrice(product.discountedPrice);
@@ -150,6 +159,13 @@ const SubcategoryPage = () => {
   };
 
   const handleProductClick = (product) => {
+    // Check if user is logged in
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setShowLoginModal(true);
+      return;
+    }
+
     if (product.link) {
       window.open(product.link, "_blank");
     }
@@ -264,6 +280,11 @@ const SubcategoryPage = () => {
           </div>
         ))}
       </div>
+
+      <LoginModal
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+      />
     </div>
   );
 };

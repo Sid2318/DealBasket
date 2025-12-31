@@ -48,12 +48,16 @@ const Navbar = () => {
           <li>
             <Link to="/">Home</Link>
           </li>
-          <li>
-            <Link to="/history">History</Link>
-          </li>
-          <li>
-            <Link to="/dashboard">Dashboard</Link>
-          </li>
+          {isLoggedIn && (
+            <>
+              <li>
+                <Link to="/history">History</Link>
+              </li>
+              <li>
+                <Link to="/dashboard">Dashboard</Link>
+              </li>
+            </>
+          )}
         </ul>
         <div className="navbar__auth">
           {isLoggedIn ? (

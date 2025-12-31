@@ -93,7 +93,11 @@ export const runAggregateScraperAndStore = async () => {
         product.name.trim() !== "" &&
         product.category &&
         product.subcategory &&
-        product.website
+        product.website &&
+        product.actualPrice &&
+        product.actualPrice.trim() !== "" &&
+        product.discountedPrice &&
+        product.discountedPrice.trim() !== ""
       );
     });
 
