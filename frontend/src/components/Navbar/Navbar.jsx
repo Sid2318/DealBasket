@@ -43,7 +43,14 @@ const Navbar = () => {
   return (
     <>
       <nav className="navbar">
-        <div className="navbar__logo">DealBasket</div>
+        <div className="navbar__logo" onClick={() => navigate("/")}>
+          <img
+            src="/images/DealBasketLogo.png"
+            alt="DealBasket"
+            className="logo-image"
+          />
+          <span>DealBasket</span>
+        </div>
         <ul className="navbar__links">
           <li>
             <Link to="/">Home</Link>

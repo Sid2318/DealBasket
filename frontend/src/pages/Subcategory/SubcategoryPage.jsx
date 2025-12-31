@@ -140,16 +140,12 @@ const SubcategoryPage = () => {
         discount: product.discount,
       };
 
-      console.log("Sending purchase data:", purchaseData);
-      const response = await savePurchase(purchaseData);
-      console.log("Purchase response:", response);
+      await savePurchase(purchaseData);
 
       alert(
         `✅ Purchase saved! You saved ₹${savedAmount.toLocaleString("en-IN")}!`
       );
     } catch (error) {
-      console.error("Error saving purchase:", error);
-      console.error("Error response:", error.response?.data);
       alert(
         `Failed to save purchase: ${
           error.response?.data?.message || error.message

@@ -3,8 +3,6 @@ import MyHistory from "../models/MyHistory.js";
 // Save purchase to history
 export const savePurchase = async (req, res) => {
   try {
-    console.log("Received purchase request:", req.body);
-
     const {
       productId,
       productName,
@@ -48,8 +46,6 @@ export const savePurchase = async (req, res) => {
       savedAmount,
       discount,
     });
-
-    console.log("Purchase saved successfully:", purchase);
 
     res.status(201).json({
       message: "Purchase saved successfully",

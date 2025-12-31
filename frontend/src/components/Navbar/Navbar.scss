@@ -25,6 +25,21 @@
     align-items: center;
     gap: 0.5rem;
     cursor: pointer;
+    transition: transform 0.3s;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+
+    .logo-image {
+      height: 40px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    span {
+      font-size: 1.7rem;
+    }
   }
 
   &__links {
