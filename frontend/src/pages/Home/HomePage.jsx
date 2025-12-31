@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./HomePage.scss";
 
 import CATEGORY_DATA from "../../data/category.js";
 import SUBCATEGORY_IMAGES from "../../data/subcategoryImages.js";
 
 const HomePage = () => {
+  const navigate = useNavigate();
   // 'all' is the default selected tab
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [mainCategory, setMainCategory] = useState(null); // for when inside 'all'
@@ -16,6 +18,10 @@ const HomePage = () => {
 
   const handleMainCategoryClick = (cat) => {
     setMainCategory(cat);
+  };
+
+  const handleSubcategoryClick = (subcategory) => {
+    navigate(`/subcategory/${subcategory}`);
   };
 
   return (
@@ -94,7 +100,11 @@ const HomePage = () => {
           </h2>
           <div className="subcategories-container">
             {CATEGORY_DATA[mainCategory].map((subcat) => (
-              <div className="subcategory-box" key={subcat}>
+              <div
+                className="subcategory-box"
+                key={subcat}
+                onClick={() => handleSubcategoryClick(subcat)}
+              >
                 <div className="subcategory-image-wrapper">
                   <img
                     src={
@@ -127,7 +137,11 @@ const HomePage = () => {
           </h2>
           <div className="subcategories-container">
             {CATEGORY_DATA[selectedCategory].map((subcat) => (
-              <div className="subcategory-box" key={subcat}>
+              <div
+                className="subcategory-box"
+                key={subcat}
+                onClick={() => handleSubcategoryClick(subcat)}
+              >
                 <div className="subcategory-image-wrapper">
                   <img
                     src={

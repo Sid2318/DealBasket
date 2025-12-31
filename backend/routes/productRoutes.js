@@ -8,8 +8,52 @@ const router = express.Router();
 // Get all products
 router.get("/", async (req, res) => {
   try {
-    const products = await Product.find();
+    const { category, subcategory } = req.query;
+    const filter = {};
+
+    if (category && category !== "all") {
+      filter.category = category;
+    }
+
+    if (subcategory) {
+      filter.subcategory = subcategory;
+    }
+
+    const products = await Product.find(filter);
     res.json(products);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Get products by subcategory
+router.get("/subcategory/:subcategory", async (req, res) => {
+  try {
+    const products = await Product.find({
+      subcategory: req.params.subcategory,
+    });
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Get all categories with subcategories
+router.get("/categories/all", async (req, res) => {
+  try {
+    const categories = await Product.aggregate([
+      {
+        $group: {
+          _id: "$category",
+          subcategories: { $addToSet: "$subcategory" },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $sort: { _id: 1 },
+      },
+    ]);
+    res.json(categories);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

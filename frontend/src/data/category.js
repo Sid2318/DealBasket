@@ -2,8 +2,8 @@ const CATEGORY_DATA = {
   all:[
     "electronics",
     "fashion",
-    "home",
-    "care",
+    "LifeStyle",
+    "Beauty",
     "groceries",
   ],
   electronics: [
@@ -26,7 +26,7 @@ const CATEGORY_DATA = {
     "jewelry",
     "ethnic",
   ],
-  home: [
+  LifeStyle: [
     "furniture",
     "kitchen",
     "decor",
@@ -35,7 +35,7 @@ const CATEGORY_DATA = {
     "lighting",
     "bedding",
   ],
-  care: [
+  Beauty: [
     "cleaning",
     "care",
     "skincare",

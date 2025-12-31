@@ -1,11 +1,12 @@
 const SUBCATEGORY_IMAGES = {
   // Main Categories
-  electronics:
-    "https://images.unsplash.com/photo-1498049794561-7780e7231661?w=400&h=400&fit=crop&auto=format",
+  electronics: "/images/categories/electronics.avif",
   fashion:
     "https://images.unsplash.com/photo-1445205170230-053b83016050?w=400&h=400&fit=crop&auto=format",
-  home: "https://images.unsplash.com/photo-1484101403633-562f891dc89a?w=400&h=400&fit=crop&auto=format",
-  care: "https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=400&h=400&fit=crop&auto=format",
+  LifeStyle:
+    "https://images.unsplash.com/photo-1484101403633-562f891dc89a?w=400&h=400&fit=crop&auto=format",
+  Beauty:
+    "https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=400&h=400&fit=crop&auto=format",
   groceries:
     "https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&h=400&fit=crop&auto=format",
 

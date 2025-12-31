@@ -7,6 +7,7 @@ import SignUpPage from "../pages/Auth/SignUp/SignUpPage";
 import ProductCompare from "../pages/Product/ProductCompare";
 import History from "../pages/History/History";
 import Dashboard from "../pages/Dashboard/Dashboard";
+import SubcategoryPage from "../pages/Subcategory/SubcategoryPage";
 import App from "../App";
 
 const AppRouter = () => (
@@ -16,6 +17,7 @@ const AppRouter = () => (
         <Route index element={<HomePage />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="signup" element={<SignUpPage />} />
+        <Route path="subcategory/:subcategory" element={<SubcategoryPage />} />
         <Route path="product/:productId" element={<ProductCompare />} />
         <Route path="history" element={<History />} />
         <Route path="dashboard" element={<Dashboard />} />

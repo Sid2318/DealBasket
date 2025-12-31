@@ -4,14 +4,42 @@ const productSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: true
+      required: true,
     },
     category: {
-      type: String
+      type: String,
+      required: true,
+    },
+    subcategory: {
+      type: String,
+      required: true,
+    },
+    website: {
+      type: String,
+      required: true,
     },
     image: {
-      type: String
-    }
+      type: String,
+    },
+    quantity: {
+      type: String,
+    },
+    actualPrice: {
+      type: String,
+    },
+    discountedPrice: {
+      type: String,
+    },
+    discount: {
+      type: String,
+    },
+    details: {
+      type: [String],
+      default: [],
+    },
+    link: {
+      type: String,
+    },
   },
   { timestamps: true }
 );
