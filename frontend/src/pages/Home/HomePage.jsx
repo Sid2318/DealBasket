@@ -27,11 +27,16 @@ const HomePage = () => {
   return (
     <div className="home-page">
       <div className="hero-section">
-        <h1>Welcome to DealBasket</h1>
-        <p>Compare prices and save money on your favorite products!</p>
+        <div className="hero-content">
+          <h1>🛍️ Welcome to DealBasket</h1>
+          <p className="hero-subtitle">
+            Compare prices and save money on your favorite products!
+          </p>
+        </div>
       </div>
 
       <div className="categories-section">
+        <h2 className="section-title">Category</h2>
         <div className="categories-container">
           {Object.keys(CATEGORY_DATA).map((cat) => (
             <button
@@ -41,7 +46,16 @@ const HomePage = () => {
               }`}
               onClick={() => handleCategoryClick(cat)}
             >
-              {cat.charAt(0).toUpperCase() + cat.slice(1)}
+              <span className="category-icon">
+                {cat === "all" && "🌐"}
+                {cat === "electronics" && "📱"}
+                {cat === "fashion" && "👗"}
+                {cat === "lifestyle" && "🏠"}
+                {cat === "bestDeals" && "🔥"}
+              </span>
+              <span className="category-text">
+                {cat.charAt(0).toUpperCase() + cat.slice(1)}
+              </span>
             </button>
           ))}
         </div>
@@ -51,7 +65,7 @@ const HomePage = () => {
 
       {selectedCategory === "all" && !mainCategory && (
         <div className="subcategory-block">
-          <h2>All Categories</h2>
+          {/* <h2 className="block-title">Explore All Categories</h2> */}
           <div className="subcategories-container">
             {CATEGORY_DATA.all.map((cat) => (
               <div
@@ -74,6 +88,7 @@ const HomePage = () => {
                         "https://img.icons8.com/fluency/96/image.png";
                     }}
                   />
+                  <div className="image-overlay"></div>
                 </div>
                 <span className="subcategory-name">
                   {cat.charAt(0).toUpperCase() + cat.slice(1)}
@@ -87,16 +102,12 @@ const HomePage = () => {
       {/* If a main category is selected from 'all', show its subcategories */}
       {selectedCategory === "all" && mainCategory && (
         <div className="subcategory-block">
-          <button
-            className="category-btn"
-            style={{ marginBottom: 16 }}
-            onClick={() => setMainCategory(null)}
-          >
-            ← Back
+          <button className="back-btn" onClick={() => setMainCategory(null)}>
+            ← Back to Categories
           </button>
-          <h2>
+          <h2 className="block-title">
             {mainCategory.charAt(0).toUpperCase() + mainCategory.slice(1)}{" "}
-            Subcategories
+            Collection
           </h2>
           <div className="subcategories-container">
             {CATEGORY_DATA[mainCategory].map((subcat) => (
@@ -117,6 +128,7 @@ const HomePage = () => {
                         "https://img.icons8.com/fluency/96/image.png";
                     }}
                   />
+                  <div className="image-overlay"></div>
                 </div>
                 <span className="subcategory-name">
                   {subcat.charAt(0).toUpperCase() + subcat.slice(1)}
@@ -130,11 +142,11 @@ const HomePage = () => {
       {/* If a specific category tab is selected (not 'all'), show its subcategories */}
       {selectedCategory !== "all" && (
         <div className="subcategory-block">
-          <h2>
+          {/* <h2 className="block-title">
             {selectedCategory.charAt(0).toUpperCase() +
               selectedCategory.slice(1)}{" "}
-            Subcategories
-          </h2>
+            Collection
+          </h2> */}
           <div className="subcategories-container">
             {CATEGORY_DATA[selectedCategory].map((subcat) => (
               <div
@@ -154,6 +166,7 @@ const HomePage = () => {
                         "https://img.icons8.com/fluency/96/image.png";
                     }}
                   />
+                  <div className="image-overlay"></div>
                 </div>
                 <span className="subcategory-name">
                   {subcat.charAt(0).toUpperCase() + subcat.slice(1)}

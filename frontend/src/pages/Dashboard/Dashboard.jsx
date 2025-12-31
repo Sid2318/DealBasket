@@ -45,12 +45,17 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-page">
-      <button className="back-btn" onClick={() => navigate("/")}>
-        ← Back to Home
-      </button>
-
-      <h2>Savings Dashboard</h2>
-      <p className="subtitle">Track your smart shopping decisions</p>
+      <div className="page-header">
+        <button className="back-btn" onClick={() => navigate("/")}>
+          ← Back
+        </button>
+        <div className="header-content">
+          <h2>📊 Savings Dashboard</h2>
+          <p className="subtitle">
+            Track your smart shopping decisions and savings
+          </p>
+        </div>
+      </div>
 
       <div className="stats-grid">
         <div className="stat-card total-savings">
@@ -60,6 +65,7 @@ const Dashboard = () => {
             <p className="stat-value">
               ₹{totalSavings.toLocaleString("en-IN")}
             </p>
+            <p className="stat-label">Money saved</p>
           </div>
         </div>
 
@@ -68,6 +74,7 @@ const Dashboard = () => {
           <div className="stat-info">
             <h3>Total Spent</h3>
             <p className="stat-value">₹{totalSpent.toLocaleString("en-IN")}</p>
+            <p className="stat-label">Amount paid</p>
           </div>
         </div>
 
@@ -76,6 +83,7 @@ const Dashboard = () => {
           <div className="stat-info">
             <h3>Total Purchases</h3>
             <p className="stat-value">{totalPurchases}</p>
+            <p className="stat-label">Items bought</p>
           </div>
         </div>
 
@@ -86,24 +94,57 @@ const Dashboard = () => {
             <p className="stat-value">
               ₹{averageSavings.toLocaleString("en-IN")}
             </p>
+            <p className="stat-label">Per purchase</p>
           </div>
         </div>
       </div>
 
       <div className="recent-savings">
-        <h3>Recent Purchases</h3>
+        <div className="section-header">
+          <h3>🎉 Recent Purchases</h3>
+          <button className="view-all-btn" onClick={() => navigate("/history")}>
+            View All →
+          </button>
+        </div>
         {recentPurchases.length === 0 ? (
-          <p className="empty">No purchases yet!</p>
+          <div className="empty-state">
+            <div className="empty-icon">🛒</div>
+            <p>No purchases yet! Start shopping to see your savings.</p>
+          </div>
         ) : (
           <div className="savings-list">
             {recentPurchases.map((purchase) => (
               <div key={purchase._id} className="savings-item">
+                <div className="item-image">
+                  {purchase.productImage ? (
+                    <img
+                      src={purchase.productImage}
+                      alt={purchase.productName}
+                    />
+                  ) : (
+                    <div className="no-image">📦</div>
+                  )}
+                </div>
                 <div className="item-info">
                   <h4>{purchase.productName}</h4>
-                  <p>{purchase.storeName}</p>
+                  <div className="item-meta">
+                    <span className="website">{purchase.website}</span>
+                    <span className="date">
+                      {new Date(purchase.purchasedAt).toLocaleDateString(
+                        "en-IN",
+                        {
+                          month: "short",
+                          day: "numeric",
+                        }
+                      )}
+                    </span>
+                  </div>
                 </div>
                 <div className="item-savings">
-                  <span className="saved">+₹{purchase.savedAmount}</span>
+                  <span className="discount">{purchase.discount} OFF</span>
+                  <span className="saved">
+                    ₹{purchase.savedAmount.toLocaleString("en-IN")} saved
+                  </span>
                 </div>
               </div>
             ))}

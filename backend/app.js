@@ -30,12 +30,12 @@ const startServer = async () => {
       console.log(`🚀 Server running on http://localhost:${PORT}`);
 
       // Run aggregate scraper in background after server starts
-      console.log("\n🔄 Starting background scraper...\n");
-      runAggregateScraperAndStore()
-        .then(() =>
-          console.log("✅ Background scraper completed successfully\n")
-        )
-        .catch((err) => console.error("❌ Background scraper error:", err));
+      // console.log("\n🔄 Starting background scraper...\n");
+      // runAggregateScraperAndStore()
+      //   .then(() =>
+      //     console.log("✅ Background scraper completed successfully\n")
+      //   )
+      //   .catch((err) => console.error("❌ Background scraper error:", err));
     });
   } catch (error) {
     console.error("❌ Error starting server:", error);

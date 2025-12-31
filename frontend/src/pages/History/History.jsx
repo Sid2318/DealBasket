@@ -52,45 +52,66 @@ const History = () => {
 
   return (
     <div className="history-page">
-      <button className="back-btn" onClick={() => navigate("/")}>
-        Back to Home
-      </button>
-
-      <h2>Purchase History</h2>
-      <p className="subtitle">Your savings journey</p>
+      <div className="page-header">
+        <button className="back-btn" onClick={() => navigate("/")}>
+          ← Back
+        </button>
+        <div className="header-content">
+          <h2>📋 Purchase History</h2>
+          <p className="subtitle">Track your smart shopping decisions</p>
+        </div>
+      </div>
 
       {history.length === 0 ? (
         <div className="empty-state">
-          <p>No purchases yet!</p>
-          <button onClick={() => navigate("/")}>Start Shopping</button>
+          <div className="empty-icon">🛍️</div>
+          <h3>No purchases yet!</h3>
+          <p>Start shopping and save money with DealBasket</p>
+          <button className="shop-btn" onClick={() => navigate("/")}>
+            Start Shopping
+          </button>
         </div>
       ) : (
         <div className="history-grid">
           {history.map((purchase) => (
             <div key={purchase._id} className="purchase-card">
-              <div className="purchase-header">
-                <h3>{purchase.productName}</h3>
-                <span className="date">{formatDate(purchase.purchasedAt)}</span>
+              <div className="card-image">
+                {purchase.productImage ? (
+                  <img src={purchase.productImage} alt={purchase.productName} />
+                ) : (
+                  <div className="no-image">📦</div>
+                )}
+                <div className="discount-badge">{purchase.discount}</div>
               </div>
 
-              <div className="purchase-details">
-                <div className="detail-row">
-                  <span className="label">Store:</span>
-                  <span className="value">{purchase.storeName}</span>
-                </div>
-                <div className="detail-row">
-                  <span className="label">Original Price:</span>
-                  <span className="value original">
-                    ₹{purchase.originalPrice}
+              <div className="card-content">
+                <div className="purchase-header">
+                  <h3>{purchase.productName}</h3>
+                  <span className="date">
+                    {formatDate(purchase.purchasedAt)}
                   </span>
                 </div>
-                <div className="detail-row">
-                  <span className="label">Final Price:</span>
-                  <span className="value final">₹{purchase.finalPrice}</span>
+
+                <div className="website-info">
+                  <span className="website-badge">{purchase.website}</span>
+                  <span className="category-badge">{purchase.category}</span>
                 </div>
-                <div className="detail-row savings">
-                  <span className="label">You Saved:</span>
-                  <span className="value">₹{purchase.savedAmount}</span>
+
+                <div className="purchase-details">
+                  <div className="price-row">
+                    <span className="original-price">
+                      ₹{purchase.originalPrice.toLocaleString("en-IN")}
+                    </span>
+                    <span className="final-price">
+                      ₹{purchase.finalPrice.toLocaleString("en-IN")}
+                    </span>
+                  </div>
+                  <div className="savings-row">
+                    <span className="savings-label">You Saved</span>
+                    <span className="savings-amount">
+                      ₹{purchase.savedAmount.toLocaleString("en-IN")}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>

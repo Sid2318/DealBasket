@@ -3,6 +3,278 @@
 .history-page {
   min-height: 100vh;
   padding: 100px 2rem 2rem;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+  max-width: 1400px;
+  margin: 0 auto;
+
+  .page-header {
+    margin-bottom: 3rem;
+
+    .back-btn {
+      background: $white;
+      border: 2px solid $border;
+      color: $primary;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 1.5rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 50px;
+      transition: all 0.3s;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+      &:hover {
+        background: $primary;
+        color: $white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(108, 99, 255, 0.3);
+      }
+    }
+
+    .header-content {
+      text-align: center;
+
+      h2 {
+        font-size: 2.5rem;
+        color: $primary-dark;
+        margin-bottom: 0.5rem;
+        font-weight: 800;
+      }
+
+      .subtitle {
+        color: $text-light;
+        font-size: 1.1rem;
+      }
+    }
+  }
+
+  .loading,
+  .error {
+    text-align: center;
+    padding: 4rem;
+    font-size: 1.2rem;
+    color: $text-light;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: $white;
+    border-radius: 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+
+    .empty-icon {
+      font-size: 5rem;
+      margin-bottom: 1rem;
+    }
+
+    h3 {
+      font-size: 1.8rem;
+      color: $text-main;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      color: $text-light;
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+    }
+
+    .shop-btn {
+      background: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
+      color: $white;
+      border: none;
+      padding: 1rem 2.5rem;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 12px rgba(108, 99, 255, 0.3);
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(108, 99, 255, 0.4);
+      }
+    }
+  }
+
+  .history-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 2rem;
+
+    .purchase-card {
+      background: $white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+      &:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+      }
+
+      .card-image {
+        position: relative;
+        width: 100%;
+        height: 250px;
+        background: #f8f9fa;
+        overflow: hidden;
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+          padding: 1rem;
+        }
+
+        .no-image {
+          width: 100%;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 5rem;
+          color: $text-light;
+        }
+
+        .discount-badge {
+          position: absolute;
+          top: 1rem;
+          right: 1rem;
+          background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+          color: $white;
+          padding: 0.5rem 1rem;
+          border-radius: 50px;
+          font-size: 0.9rem;
+          font-weight: 700;
+          box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+        }
+      }
+
+      .card-content {
+        padding: 1.5rem;
+
+        .purchase-header {
+          margin-bottom: 1rem;
+
+          h3 {
+            font-size: 1.1rem;
+            color: $text-main;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+          }
+
+          .date {
+            font-size: 0.85rem;
+            color: $text-light;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+
+            &:before {
+              content: "📅";
+              font-size: 0.9rem;
+            }
+          }
+        }
+
+        .website-info {
+          display: flex;
+          gap: 0.5rem;
+          margin-bottom: 1rem;
+
+          .website-badge,
+          .category-badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: capitalize;
+          }
+
+          .website-badge {
+            background: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
+            color: $white;
+          }
+
+          .category-badge {
+            background: $background;
+            color: $text-light;
+          }
+        }
+
+        .purchase-details {
+          .price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px dashed $border;
+
+            .original-price {
+              color: $text-light;
+              text-decoration: line-through;
+              font-size: 1rem;
+            }
+
+            .final-price {
+              color: $primary;
+              font-size: 1.5rem;
+              font-weight: 700;
+            }
+          }
+
+          .savings-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, rgba(39, 174, 96, 0.1) 0%, rgba(46, 204, 113, 0.1) 100%);
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+
+            .savings-label {
+              color: $text-main;
+              font-weight: 600;
+              font-size: 0.9rem;
+            }
+
+            .savings-amount {
+              color: #27ae60;
+              font-size: 1.3rem;
+              font-weight: 700;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .history-page {
+    padding: 100px 1rem 1rem;
+
+    .page-header .header-content h2 {
+      font-size: 2rem;
+    }
+
+    .history-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+.history-page {
+  min-height: 100vh;
+  padding: 100px 2rem 2rem;
   background: $background;
   max-width: 1200px;
   margin: 0 auto;
