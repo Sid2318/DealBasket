@@ -65,7 +65,12 @@ export const savePurchase = async (req, res) => {
 // Get all purchase history for a user
 export const getMyHistory = async (req, res) => {
   try {
-    const userId = req.user?._id || "guest";
+    if (!req.user || !req.user._id) {
+      return res
+        .status(401)
+        .json({ message: "You must be logged in to view your history." });
+    }
+    const userId = req.user._id;
 
     const history = await MyHistory.find({ userId }).sort({ purchasedAt: -1 });
 
@@ -78,7 +83,12 @@ export const getMyHistory = async (req, res) => {
 // Get total savings for a user
 export const getTotalSavings = async (req, res) => {
   try {
-    const userId = req.user?._id || "guest";
+    if (!req.user || !req.user._id) {
+      return res
+        .status(401)
+        .json({ message: "You must be logged in to view your savings." });
+    }
+    const userId = req.user._id;
 
     const history = await MyHistory.find({ userId });
 

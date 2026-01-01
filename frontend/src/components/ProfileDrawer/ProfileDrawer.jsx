@@ -94,17 +94,19 @@ const ProfileDrawer = ({ isOpen, onClose, onLogout }) => {
               <span className="menu-text">Dashboard</span>
               <span className="menu-arrow">›</span>
             </button>
-            <button
-              className="menu-item seller"
-              onClick={() => {
-                navigate("/seller/register");
-                onClose();
-              }}
-            >
-              <span className="menu-icon">🏪</span>
-              <span className="menu-text">Login as Seller</span>
-              <span className="menu-arrow">›</span>
-            </button>
+            {user.role !== "seller" && (
+              <button
+                className="menu-item seller"
+                onClick={() => {
+                  navigate("/seller/register");
+                  onClose();
+                }}
+              >
+                <span className="menu-icon">🏪</span>
+                <span className="menu-text">Login as Seller</span>
+                <span className="menu-arrow">›</span>
+              </button>
+            )}
             <button className="menu-item logout" onClick={handleLogout}>
               <span className="menu-icon">🚪</span>
               <span className="menu-text">Logout</span>
