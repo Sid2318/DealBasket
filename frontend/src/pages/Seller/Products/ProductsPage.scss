@@ -1,0 +1,374 @@
+@use "../../../styles/colors.scss" as *;
+
+.products-page {
+  min-height: 100vh;
+  padding: 100px 2rem 2rem;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+  max-width: 1400px;
+  margin: 0 auto;
+
+  .loading {
+    text-align: center;
+    padding: 4rem;
+    font-size: 1.2rem;
+    color: $text-light;
+  }
+
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+
+    h1 {
+      font-size: 2.5rem;
+      color: $primary-dark;
+      font-weight: 800;
+    }
+
+    .add-btn {
+      padding: 1rem 2rem;
+      background: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
+      color: $white;
+      border: none;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 12px rgba(108, 99, 255, 0.3);
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(108, 99, 255, 0.4);
+      }
+    }
+  }
+
+  .product-form {
+    background: $white;
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+
+    h2 {
+      font-size: 1.5rem;
+      color: $primary-dark;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: $text-main;
+        font-weight: 600;
+        font-size: 0.95rem;
+      }
+
+      input,
+      textarea,
+      select {
+        width: 100%;
+        padding: 0.875rem 1.25rem;
+        border: 2px solid $border;
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.3s;
+        font-family: inherit;
+
+        &:focus {
+          outline: none;
+          border-color: $primary;
+          box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1);
+        }
+
+        &::placeholder {
+          color: $text-light;
+        }
+      }
+
+      textarea {
+        resize: vertical;
+      }
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
+      color: $white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 1rem;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(108, 99, 255, 0.3);
+      }
+    }
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 2rem;
+
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 4rem 2rem;
+      background: $white;
+      border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+
+      .empty-icon {
+        font-size: 5rem;
+        margin-bottom: 1rem;
+      }
+
+      h3 {
+        font-size: 1.8rem;
+        color: $text-main;
+        margin-bottom: 0.5rem;
+      }
+
+      p {
+        color: $text-light;
+        font-size: 1.1rem;
+      }
+    }
+
+    .product-card {
+      background: $white;
+      border-radius: 20px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s;
+
+      &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+      }
+
+      .product-image {
+        width: 100%;
+        height: 200px;
+        border-radius: 12px;
+        overflow: hidden;
+        background: $background;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+          padding: 0.5rem;
+        }
+
+        .no-image {
+          font-size: 4rem;
+          color: $text-light;
+        }
+      }
+
+      .product-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+
+        h3 {
+          font-size: 1.2rem;
+          color: $text-main;
+          margin: 0;
+          flex: 1;
+        }
+
+        .stock-badge {
+          padding: 0.4rem 0.8rem;
+          background: #e8f5e9;
+          color: #27ae60;
+          border-radius: 20px;
+          font-size: 0.85rem;
+          font-weight: 600;
+
+          &.low {
+            background: #ffebee;
+            color: #e74c3c;
+          }
+        }
+      }
+
+      .quantity {
+        color: $text-light;
+        font-size: 0.9rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .details {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+
+        .detail-tag {
+          padding: 0.25rem 0.6rem;
+          background: linear-gradient(135deg, rgba(108, 99, 255, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+          color: $primary;
+          border-radius: 12px;
+          font-size: 0.8rem;
+          font-weight: 500;
+        }
+      }
+
+      .description {
+        color: $text-light;
+        font-size: 0.95rem;
+        margin-bottom: 1rem;
+        line-height: 1.5;
+      }
+
+      .product-meta {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+
+        .category,
+        .subcategory {
+          padding: 0.3rem 0.8rem;
+          background: $background;
+          border-radius: 20px;
+          font-size: 0.85rem;
+          color: $text-light;
+          text-transform: capitalize;
+        }
+      }
+
+      .price-row {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px dashed $border;
+
+        .original-price {
+          color: $text-light;
+          text-decoration: line-through;
+          font-size: 1rem;
+        }
+
+        .discounted-price {
+          color: $primary;
+          font-size: 1.5rem;
+          font-weight: 700;
+        }
+
+        .discount-badge {
+          padding: 0.3rem 0.6rem;
+          background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+          color: $white;
+          border-radius: 20px;
+          font-size: 0.75rem;
+          font-weight: 700;
+        }
+      }
+
+      .stats-row {
+        display: flex;
+        gap: 2rem;
+        margin-bottom: 1rem;
+
+        .stat {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+
+          .label {
+            color: $text-light;
+            font-size: 0.9rem;
+          }
+
+          .value {
+            color: $text-main;
+            font-weight: 700;
+            font-size: 1rem;
+          }
+        }
+      }
+
+      .actions {
+        display: flex;
+        gap: 0.75rem;
+
+        button {
+          flex: 1;
+          padding: 0.75rem;
+          border: none;
+          border-radius: 12px;
+          font-size: 0.95rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.3s;
+        }
+
+        .edit-btn {
+          background: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
+          color: $white;
+
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(108, 99, 255, 0.3);
+          }
+        }
+
+        .delete-btn {
+          background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+          color: $white;
+
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .products-page {
+    padding: 100px 1rem 1rem;
+
+    .page-header {
+      flex-direction: column;
+      gap: 1rem;
+      align-items: stretch;
+
+      h1 {
+        font-size: 2rem;
+      }
+    }
+
+    .products-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+}

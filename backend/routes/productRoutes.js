@@ -1,9 +1,22 @@
 import express from "express";
 import Product from "../models/Product.js";
+import SellerProduct from "../models/SellerProduct.js";
+import Seller from "../models/Seller.js";
 
 const router = express.Router();
 
-// Get all products
+// Get seller shop details by sellerId
+router.get("/shop/:sellerId", async (req, res) => {
+  try {
+    const seller = await Seller.findById(req.params.sellerId);
+    if (!seller) return res.status(404).json({ message: "Seller not found" });
+    res.json(seller);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Get all products (scraped + seller products)
 router.get("/", async (req, res) => {
   try {
     const { category, subcategory } = req.query;
@@ -17,20 +30,39 @@ router.get("/", async (req, res) => {
       filter.subcategory = subcategory;
     }
 
-    const products = await Product.find(filter);
-    res.json(products);
+    // Fetch both scraped products and seller products
+    const scrapedProducts = await Product.find(filter);
+    const sellerProducts = await SellerProduct.find(filter);
+
+    // Combine both arrays
+    const allProducts = [...scrapedProducts, ...sellerProducts];
+
+    res.json(allProducts);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 
-// Get products by subcategory
+// Get products by subcategory (scraped + seller products)
 router.get("/subcategory/:subcategory", async (req, res) => {
   try {
-    const products = await Product.find({
+    const scrapedProducts = await Product.find({
       subcategory: req.params.subcategory,
     });
-    res.json(products);
+
+    const sellerProducts = await SellerProduct.find({
+      subcategory: req.params.subcategory,
+    }).populate("sellerId", "shopName");
+
+    // Combine both arrays
+    // Attach shopName to seller products for frontend
+    const sellerProductsWithShop = sellerProducts.map((p) => ({
+      ...p.toObject(),
+      shopName: p.sellerId?.shopName || undefined,
+    }));
+    const allProducts = [...scrapedProducts, ...sellerProductsWithShop];
+
+    res.json(allProducts);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -57,15 +89,32 @@ router.get("/categories/all", async (req, res) => {
   }
 });
 
-// Get single product
+// Get single product (check both Product and SellerProduct)
 router.get("/:id", async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
+    // console.log("Searching for product with ID:", req.params.id);
+
+    let product = await Product.findById(req.params.id);
+    // console.log("Product collection search result:", product);
+
+    // If not found in Product, try SellerProduct
     if (!product) {
-      return res.status(404).json({ message: "Product not found" });
+      product = await SellerProduct.findById(req.params.id).populate(
+        "sellerId",
+        "shopName contactNumber address shopDescription"
+      );
+      // console.log("SellerProduct collection search result:", product);
+
+      if (!product) {
+        return res
+          .status(404)
+          .json({ message: "Product not found in both collections" });
+      }
     }
+
     res.json(product);
   } catch (error) {
+    // console.error("Error fetching product:", error);
     res.status(500).json({ message: error.message });
   }
 });

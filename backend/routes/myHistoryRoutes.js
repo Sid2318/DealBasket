@@ -9,8 +9,8 @@ import { authMiddleware } from "../middlewares/authMiddleware.js";
 const router = express.Router();
 
 // Save purchase (unprotected for guest users)
-router.post("/purchase", savePurchase);
-router.post("/save", savePurchase);
+router.post("/purchase", authMiddleware, savePurchase);
+router.post("/save", authMiddleware, savePurchase);
 
 // Get user's purchase history (unprotected for guest users)
 router.get("/", getMyHistory);

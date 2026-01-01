@@ -7,6 +7,10 @@ import SignUpPage from "../pages/Auth/SignUp/SignUpPage";
 import History from "../pages/History/History";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import SubcategoryPage from "../pages/Subcategory/SubcategoryPage";
+import ShopDetailsPage from "../pages/Seller/ShopDetails/ShopDetailsPage";
+import ShopOrder from "../pages/Seller/ShopOrder/ShopOrder";
+import ProductsPage from "../pages/Seller/Products/ProductsPage";
+import StatsPage from "../pages/Seller/Stats/StatsPage";
 import App from "../App";
 
 const AppRouter = () => (
@@ -19,6 +23,12 @@ const AppRouter = () => (
         <Route path="subcategory/:subcategory" element={<SubcategoryPage />} />
         <Route path="history" element={<History />} />
         <Route path="dashboard" element={<Dashboard />} />
+
+        {/* Seller Routes */}
+        <Route path="seller/register" element={<ShopDetailsPage />} />
+        <Route path="seller/products" element={<ProductsPage />} />
+        <Route path="seller/stats" element={<StatsPage />} />
+        <Route path="shoporder/:productId" element={<ShopOrder />} />
       </Route>
     </Routes>
   </Router>

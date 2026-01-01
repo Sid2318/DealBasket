@@ -30,8 +30,13 @@ export const savePurchase = async (req, res) => {
       });
     }
 
-    // Get userId from authenticated user (req.user is set by auth middleware)
-    const userId = req.user?._id || "guest";
+    // Require authentication for purchase
+    if (!req.user || !req.user._id) {
+      return res
+        .status(401)
+        .json({ message: "You must be logged in to make a purchase." });
+    }
+    const userId = req.user._id;
 
     const purchase = await MyHistory.create({
       userId,

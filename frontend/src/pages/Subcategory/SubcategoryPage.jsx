@@ -161,8 +161,9 @@ const SubcategoryPage = () => {
       setShowLoginModal(true);
       return;
     }
-
-    if (product.link) {
+    if (product.website === "Seller") {
+      navigate(`/shoporder/${product._id}`);
+    } else if (product.link) {
       window.open(product.link, "_blank");
     }
   };
@@ -250,7 +251,11 @@ const SubcategoryPage = () => {
                   alt={product.website}
                   className="website-icon"
                 />
-                <span className="website">{product.website}</span>
+                <span className="website">
+                  {product.website === "Seller" && product.shopName
+                    ? product.shopName
+                    : product.website}
+                </span>
               </div>
               <div className="product-prices">
                 <span className="discounted-price">

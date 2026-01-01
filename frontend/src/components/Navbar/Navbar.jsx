@@ -5,6 +5,7 @@ import ProfileDrawer from "../ProfileDrawer/ProfileDrawer";
 
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isSeller, setIsSeller] = useState(false);
   const [showDrawer, setShowDrawer] = useState(false);
   const navigate = useNavigate();
 
@@ -12,7 +13,17 @@ const Navbar = () => {
   useEffect(() => {
     const checkAuth = () => {
       const token = localStorage.getItem("token");
+      const user = localStorage.getItem("user");
       setIsLoggedIn(!!token);
+
+      if (user) {
+        try {
+          const userData = JSON.parse(user);
+          setIsSeller(userData.role === "seller");
+        } catch (error) {
+          console.error("Error parsing user data:", error);
+        }
+      }
     };
 
     checkAuth();
@@ -63,6 +74,16 @@ const Navbar = () => {
               <li>
                 <Link to="/dashboard">Dashboard</Link>
               </li>
+              {isSeller && (
+                <>
+                  <li>
+                    <Link to="/seller/products">My Products</Link>
+                  </li>
+                  <li>
+                    <Link to="/seller/stats">Seller Stats</Link>
+                  </li>
+                </>
+              )}
             </>
           )}
         </ul>

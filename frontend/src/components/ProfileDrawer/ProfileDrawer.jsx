@@ -97,9 +97,8 @@ const ProfileDrawer = ({ isOpen, onClose, onLogout }) => {
             <button
               className="menu-item seller"
               onClick={() => {
-                alert("Seller portal coming soon! 🏪");
-                // navigate("/seller");
-                // onClose();
+                navigate("/seller/register");
+                onClose();
               }}
             >
               <span className="menu-icon">🏪</span>

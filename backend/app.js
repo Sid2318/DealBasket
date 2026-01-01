@@ -5,6 +5,7 @@ import cors from "cors";
 import authRoutes from "./routes/authRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import myHistoryRoutes from "./routes/myHistoryRoutes.js";
+import sellerRoutes from "./routes/sellerRoutes.js";
 import connectDB from "./config/db.js";
 import { runAggregateScraperAndStore } from "./services/scraperService.js";
 
@@ -12,7 +13,7 @@ dotenv.config();
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
 
 const PORT = process.env.PORT || 3000;
 
@@ -25,6 +26,7 @@ const startServer = async () => {
     app.use("/auth", authRoutes);
     app.use("/products", productRoutes);
     app.use("/myhistory", myHistoryRoutes);
+    app.use("/seller", sellerRoutes);
 
     app.listen(PORT, () => {
       console.log(`🚀 Server running on http://localhost:${PORT}`);
