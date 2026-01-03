@@ -32,7 +32,7 @@ const LoginModal = ({ isOpen, onClose }) => {
         <div className="modal-features">
           <div className="feature">✓ Buy products and track savings</div>
           <div className="feature">✓ View purchase history</div>
-          <div className="feature">✓ Access personalized dashboard</div>
+          <div className="feature">✓ Access personalized savings & history</div>
           <div className="feature">✓ Get exclusive deals</div>
         </div>
 

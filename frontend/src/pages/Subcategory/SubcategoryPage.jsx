@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { getProductsBySubcategory, getAllProducts } from "../../api/productApi";
 import { savePurchase } from "../../api/historyApi";
 import LoginModal from "../../components/LoginModal/LoginModal";
+import Loader from "../../components/Loader/Loader";
 import "./SubcategoryPage.scss";
 
 const SubcategoryPage = () => {
@@ -171,7 +172,7 @@ const SubcategoryPage = () => {
   if (loading) {
     return (
       <div className="subcategory-page">
-        <div className="loading">Loading products...</div>
+        <Loader />
       </div>
     );
   }

@@ -165,6 +165,7 @@ export const addProduct = async (req, res) => {
     const product = await SellerProduct.create({
       sellerId: seller._id,
       ...req.body,
+      website: seller.shopName || "Seller",
     });
 
     res.status(201).json({ message: "Product added successfully", product });

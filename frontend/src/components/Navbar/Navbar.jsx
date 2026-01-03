@@ -69,10 +69,7 @@ const Navbar = () => {
           {isLoggedIn && (
             <>
               <li>
-                <Link to="/history">History</Link>
-              </li>
-              <li>
-                <Link to="/dashboard">Dashboard</Link>
+                <Link to="/history">My Savings</Link>
               </li>
               {isSeller && (
                 <>

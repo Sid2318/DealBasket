@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Loader from "../../../components/Loader/Loader";
 import { useParams } from "react-router-dom";
 import { getProductById } from "../../../api/productApi";
 import axios from "../../../api/axios";
@@ -64,7 +65,7 @@ const ShopOrder = () => {
   if (loading) {
     return (
       <div className="shop-order-page">
-        <div className="loading">Loading product details...</div>
+        <Loader />
       </div>
     );
   }

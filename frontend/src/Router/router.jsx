@@ -1,11 +1,15 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 
 import HomePage from "../pages/Home/HomePage";
 import LoginPage from "../pages/Auth/Login/LoginPage";
 import SignUpPage from "../pages/Auth/SignUp/SignUpPage";
 import History from "../pages/History/History";
-import Dashboard from "../pages/Dashboard/Dashboard";
 import SubcategoryPage from "../pages/Subcategory/SubcategoryPage";
 import ShopDetailsPage from "../pages/Seller/ShopDetails/ShopDetailsPage";
 import ShopOrder from "../pages/Seller/ShopOrder/ShopOrder";
@@ -22,7 +26,7 @@ const AppRouter = () => (
         <Route path="signup" element={<SignUpPage />} />
         <Route path="subcategory/:subcategory" element={<SubcategoryPage />} />
         <Route path="history" element={<History />} />
-        <Route path="dashboard" element={<Dashboard />} />
+        {/* Dashboard route removed */}
 
         {/* Seller Routes */}
         <Route path="seller/register" element={<ShopDetailsPage />} />

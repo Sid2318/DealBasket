@@ -1,4 +1,21 @@
+
 @use "../../styles/colors.scss" as *;
+
+        .website-logo {
+          width: 32px;
+          height: 32px;
+          object-fit: contain;
+          border-radius: 8px;
+          margin-right: 0.5rem;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+          background: #fff;
+        }
+        .divider {
+          height: 1px;
+          background: $border;
+          margin: 1.2rem 0 0.7rem 0;
+          opacity: 0.18;
+        }
 
 .history-page {
   min-height: 100vh;
@@ -56,6 +73,119 @@
     color: $text-light;
   }
 
+  // Stats Section
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+
+    .stat-card {
+      background: $white;
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid transparent;
+
+      &:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+        border-color: rgba(108, 99, 255, 0.2);
+      }
+
+      &.total-savings {
+        background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+        color: $white;
+
+        .stat-info h3,
+        .stat-label {
+          color: rgba(255, 255, 255, 0.9);
+        }
+
+        .stat-value {
+          color: $white;
+        }
+      }
+
+      &.total-spent {
+        background: linear-gradient(135deg, $primary 0%, $accent 100%);
+
+        .stat-info h3,
+        .stat-label {
+          color: rgba(255, 255, 255, 0.9);
+        }
+
+        .stat-value {
+          color: $white;
+        }
+      }
+
+      .stat-icon {
+        font-size: 3rem;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+      }
+
+      .stat-info {
+        flex: 1;
+
+        h3 {
+          margin: 0 0 0.75rem 0;
+          font-size: 0.95rem;
+          color: $text-light;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          font-weight: 600;
+        }
+
+        .stat-value {
+          font-size: 2rem;
+          font-weight: 800;
+          color: $text-main;
+          margin: 0 0 0.5rem 0;
+          line-height: 1;
+        }
+
+        .stat-label {
+          font-size: 0.85rem;
+          color: $text-light;
+          margin: 0;
+        }
+      }
+    }
+  }
+
+  // History Section
+  .history-section {
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding: 0 0.5rem;
+
+      h3 {
+        margin: 0;
+        color: $primary-dark;
+        font-size: 1.8rem;
+        font-weight: 700;
+      }
+
+      .count-badge {
+        background: linear-gradient(135deg, $primary 0%, $accent 100%);
+        color: $white;
+        padding: 0.5rem 1.25rem;
+        border-radius: 50px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        box-shadow: 0 4px 12px rgba(108, 99, 255, 0.2);
+      }
+    }
+  }
+
   .empty-state {
     text-align: center;
     padding: 4rem 2rem;
@@ -66,6 +196,7 @@
     .empty-icon {
       font-size: 5rem;
       margin-bottom: 1rem;
+      animation: bounce 2s infinite;
     }
 
     h3 {
@@ -101,33 +232,45 @@
 
   .history-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 2rem;
 
     .purchase-card {
       background: $white;
-      border-radius: 20px;
+      border-radius: 24px;
       overflow: hidden;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 8px 32px rgba(60, 60, 120, 0.12);
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1.5px solid $border;
+      display: flex;
+      flex-direction: column;
+      min-height: 480px;
+      position: relative;
+      padding-bottom: 1.5rem;
 
       &:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+        transform: translateY(-10px) scale(1.025);
+        box-shadow: 0 16px 40px rgba(60, 60, 120, 0.18);
+        border-color: $primary;
       }
 
       .card-image {
         position: relative;
         width: 100%;
-        height: 250px;
-        background: #f8f9fa;
+        height: 220px;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
         overflow: hidden;
 
         img {
           width: 100%;
           height: 100%;
           object-fit: contain;
-          padding: 1rem;
+          padding: 1.2rem;
+          transition: transform 0.3s;
+        }
+
+        &:hover img {
+          transform: scale(1.07);
         }
 
         .no-image {
@@ -136,7 +279,7 @@
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 5rem;
+          font-size: 4.5rem;
           color: $text-light;
         }
 
@@ -146,33 +289,39 @@
           right: 1rem;
           background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
           color: $white;
-          padding: 0.5rem 1rem;
+          padding: 0.5rem 1.1rem;
           border-radius: 50px;
-          font-size: 0.9rem;
+          font-size: 1rem;
           font-weight: 700;
-          box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+          box-shadow: 0 4px 12px rgba(231, 76, 60, 0.18);
+          animation: pulse 2s infinite;
         }
       }
 
       .card-content {
-        padding: 1.5rem;
+        padding: 1.7rem 1.5rem 0.5rem 1.5rem;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
 
         .purchase-header {
-          margin-bottom: 1rem;
+          margin-bottom: 0.7rem;
 
           h3 {
-            font-size: 1.1rem;
-            color: $text-main;
-            margin-bottom: 0.5rem;
+            font-size: 1.18rem;
+            color: $primary-dark;
+            margin-bottom: 0.3rem;
             line-height: 1.4;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
+            min-height: 2.5rem;
+            font-weight: 800;
           }
 
           .date {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             color: $text-light;
             display: flex;
             align-items: center;
@@ -180,33 +329,36 @@
 
             &:before {
               content: "📅";
-              font-size: 0.9rem;
+              font-size: 0.95rem;
             }
           }
         }
 
         .website-info {
           display: flex;
-          gap: 0.5rem;
-          margin-bottom: 1rem;
+          gap: 0.6rem;
+          margin-bottom: 1.1rem;
+          flex-wrap: wrap;
 
           .website-badge,
           .category-badge {
-            padding: 0.4rem 0.8rem;
+            padding: 0.45rem 1rem;
             border-radius: 50px;
-            font-size: 0.8rem;
-            font-weight: 600;
+            font-size: 0.85rem;
+            font-weight: 700;
             text-transform: capitalize;
           }
 
           .website-badge {
             background: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
             color: $white;
+            box-shadow: 0 2px 8px rgba(108, 99, 255, 0.13);
           }
 
           .category-badge {
             background: $background;
             color: $text-light;
+            border: 1px solid $border;
           }
         }
 
@@ -222,13 +374,13 @@
             .original-price {
               color: $text-light;
               text-decoration: line-through;
-              font-size: 1rem;
+              font-size: 1.05rem;
             }
 
             .final-price {
               color: $primary;
-              font-size: 1.5rem;
-              font-weight: 700;
+              font-size: 1.55rem;
+              font-weight: 900;
             }
           }
 
@@ -236,20 +388,60 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: linear-gradient(135deg, rgba(39, 174, 96, 0.1) 0%, rgba(46, 204, 113, 0.1) 100%);
-            padding: 0.75rem 1rem;
+            background: linear-gradient(
+              135deg,
+              rgba(39, 174, 96, 0.13) 0%,
+              rgba(46, 204, 113, 0.13) 100%
+            );
+            padding: 0.9rem 1.2rem;
             border-radius: 12px;
+            border: 1px solid rgba(39, 174, 96, 0.18);
 
             .savings-label {
               color: $text-main;
-              font-weight: 600;
-              font-size: 0.9rem;
+              font-weight: 700;
+              font-size: 1rem;
             }
 
             .savings-amount {
               color: #27ae60;
-              font-size: 1.3rem;
-              font-weight: 700;
+              font-size: 1.35rem;
+              font-weight: 900;
+            }
+          }
+        }
+
+        .review-row {
+          display: flex;
+          justify-content: flex-end;
+          margin-top: 1.2rem;
+
+          .review-btn {
+            background: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
+            color: $white;
+            border: none;
+            padding: 0.7rem 2.5rem 0.7rem 1.7rem;
+            border-radius: 50px;
+            font-size: 1.13rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.22s;
+            box-shadow: 0 2px 8px rgba(108, 99, 255, 0.13);
+            position: relative;
+            letter-spacing: 0.01em;
+
+            .review-icon {
+              font-size: 1.25rem;
+              margin-right: 0.7rem;
+              vertical-align: middle;
+              filter: drop-shadow(0 1px 2px rgba(255, 215, 0, 0.18));
+            }
+
+            &:hover {
+              background: linear-gradient(135deg, $primary-dark 0%, $primary 100%);
+              transform: translateY(-2px) scale(1.045);
+              box-shadow: 0 8px 24px rgba(108, 99, 255, 0.18);
+              color: #fffbe7;
             }
           }
         }
@@ -258,170 +450,95 @@
   }
 }
 
+// Animations
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+// Responsive Design
 @media (max-width: 768px) {
   .history-page {
     padding: 100px 1rem 1rem;
 
-    .page-header .header-content h2 {
-      font-size: 2rem;
+    .page-header {
+      margin-bottom: 2rem;
+
+      .header-content h2 {
+        font-size: 1.8rem;
+      }
+
+      .subtitle {
+        font-size: 1rem;
+      }
     }
 
-    .history-grid {
+    .stats-grid {
       grid-template-columns: 1fr;
-    }
-  }
-}
+      gap: 1.5rem;
+      margin-bottom: 2rem;
 
-.history-page {
-  min-height: 100vh;
-  padding: 100px 2rem 2rem;
-  background: $background;
-  max-width: 1200px;
-  margin: 0 auto;
+      .stat-card {
+        padding: 1.5rem;
 
-  .loading {
-    text-align: center;
-    padding: 4rem;
-    font-size: 1.2rem;
-    color: $text-light;
-  }
+        .stat-icon {
+          font-size: 2.5rem;
+        }
 
-  .back-btn {
-    background: transparent;
-    border: none;
-    color: $primary;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    margin-bottom: 2rem;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    transition: all 0.2s;
-
-    &:hover {
-      background: $primary-light;
-    }
-  }
-
-  h2 {
-    font-size: 2rem;
-    color: $primary-dark;
-    margin-bottom: 0.5rem;
-    text-align: center;
-  }
-
-  .subtitle {
-    text-align: center;
-    color: $text-light;
-    margin-bottom: 3rem;
-  }
-
-  .empty-state {
-    text-align: center;
-    padding: 4rem;
-
-    p {
-      font-size: 1.2rem;
-      color: $text-light;
-      margin-bottom: 1.5rem;
-    }
-
-    button {
-      padding: 0.75rem 1.5rem;
-      background: $primary;
-      color: $white;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
-
-      &:hover {
-        background: $button-hover;
+        .stat-info {
+          .stat-value {
+            font-size: 1.75rem;
+          }
+        }
       }
     }
-  }
 
-  .history-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 2rem;
-
-    .purchase-card {
-      background: $white;
-      border-radius: 12px;
-      padding: 1.5rem;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      transition: all 0.3s;
-
-      &:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-      }
-
-      .purchase-header {
-        display: flex;
-        justify-content: space-between;
+    .history-section {
+      .section-header {
+        flex-direction: column;
         align-items: flex-start;
-        margin-bottom: 1.5rem;
-        padding-bottom: 1rem;
-        border-bottom: 2px solid $background;
+        gap: 1rem;
 
         h3 {
-          margin: 0;
-          color: $text-main;
-          font-size: 1.2rem;
-          flex: 1;
-        }
-
-        .date {
-          color: $text-light;
-          font-size: 0.9rem;
-          white-space: nowrap;
-          margin-left: 1rem;
+          font-size: 1.5rem;
         }
       }
+    }
 
-      .purchase-details {
-        .detail-row {
-          display: flex;
-          justify-content: space-between;
-          margin-bottom: 0.75rem;
+    .history-grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
 
-          .label {
-            color: $text-light;
-            font-size: 0.95rem;
-          }
+      .purchase-card {
+        .card-image {
+          height: 220px;
+        }
 
-          .value {
-            font-weight: 600;
-            color: $text-main;
+        .card-content {
+          padding: 1.25rem;
 
-            &.original {
-              text-decoration: line-through;
-              color: $text-light;
-            }
+          .purchase-details {
+            .savings-row {
+              padding: 0.75rem 1rem;
 
-            &.final {
-              color: $primary;
-              font-size: 1.1rem;
-            }
-          }
-
-          &.savings {
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 2px solid $background;
-
-            .label {
-              font-weight: 600;
-              color: $success;
-            }
-
-            .value {
-              color: $success;
-              font-size: 1.2rem;
+              .savings-amount {
+                font-size: 1.2rem;
+              }
             }
           }
         }
@@ -430,17 +547,38 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 480px) {
   .history-page {
-    padding: 80px 1rem 1rem;
+    .page-header {
+      .header-content h2 {
+        font-size: 1.5rem;
+      }
+    }
 
-    h2 {
-      font-size: 1.5rem;
+    .stats-grid {
+      .stat-card {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+
+        .stat-info {
+          h3,
+          .stat-label {
+            text-align: center;
+          }
+        }
+      }
     }
 
     .history-grid {
-      grid-template-columns: 1fr;
-      gap: 1rem;
+      .purchase-card {
+        .card-content {
+          .website-info {
+            flex-direction: column;
+            align-items: flex-start;
+          }
+        }
+      }
     }
   }
 }

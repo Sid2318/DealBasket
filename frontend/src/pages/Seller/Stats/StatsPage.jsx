@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Loader from "../../../components/Loader/Loader";
 import { getSellerStats, getSellerSalesStats } from "../../../api/sellerApi";
 import "./StatsPage.scss";
 
@@ -29,7 +30,7 @@ const StatsPage = () => {
   if (loading) {
     return (
       <div className="stats-page">
-        <div className="loading">Loading stats...</div>
+        <Loader />
       </div>
     );
   }

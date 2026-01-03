@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Loader from "../../../components/Loader/Loader";
 import CATEGORY_DATA from "../../../data/category";
 import { useNavigate } from "react-router-dom";
 import {
@@ -154,7 +155,7 @@ const ProductsPage = () => {
   if (loading) {
     return (
       <div className="products-page">
-        <div className="loading">Loading products...</div>
+        <Loader />
       </div>
     );
   }

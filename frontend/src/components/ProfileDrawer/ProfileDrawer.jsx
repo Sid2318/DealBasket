@@ -66,7 +66,7 @@ const ProfileDrawer = ({ isOpen, onClose, onLogout }) => {
               <div className="stat-icon">💰</div>
               <div className="stat-info">
                 <p className="stat-label">Savings</p>
-                <p className="stat-value">View Dashboard</p>
+                <p className="stat-value">View History</p>
               </div>
             </div>
           </div>
@@ -83,17 +83,7 @@ const ProfileDrawer = ({ isOpen, onClose, onLogout }) => {
               <span className="menu-text">Purchase History</span>
               <span className="menu-arrow">›</span>
             </button>
-            <button
-              className="menu-item"
-              onClick={() => {
-                navigate("/dashboard");
-                onClose();
-              }}
-            >
-              <span className="menu-icon">📊</span>
-              <span className="menu-text">Dashboard</span>
-              <span className="menu-arrow">›</span>
-            </button>
+            {/* Dashboard menu item removed */}
             {user.role !== "seller" && (
               <button
                 className="menu-item seller"
