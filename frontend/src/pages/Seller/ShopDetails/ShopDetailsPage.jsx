@@ -20,6 +20,7 @@ const ShopDetailsPage = () => {
     businessType: "individual",
     gstNumber: "",
   });
+  const [formErrors, setFormErrors] = useState({});
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,8 +35,30 @@ const ShopDetailsPage = () => {
     }
   };
 
+  const validate = () => {
+    const errors = {};
+    if (!formData.shopName) errors.shopName = "Shop name is required";
+    if (!formData.contactNumber) {
+      errors.contactNumber = "Contact number is required";
+    } else if (!/^\d{10}$/.test(formData.contactNumber)) {
+      errors.contactNumber = "Enter a valid 10-digit number";
+    }
+    if (!formData.address.street) errors.street = "Street is required";
+    if (!formData.address.city) errors.city = "City is required";
+    if (!formData.address.state) errors.state = "State is required";
+    if (!formData.address.pincode) {
+      errors.pincode = "Pincode is required";
+    } else if (!/^\d{6}$/.test(formData.address.pincode)) {
+      errors.pincode = "Enter a valid 6-digit pincode";
+    }
+    return errors;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const errors = validate();
+    setFormErrors(errors);
+    if (Object.keys(errors).length > 0) return;
     setLoading(true);
 
     try {
@@ -80,6 +103,9 @@ const ShopDetailsPage = () => {
               placeholder="Enter your shop name"
               required
             />
+            {formErrors.shopName && (
+              <div className="error-message">{formErrors.shopName}</div>
+            )}
           </div>
 
           <div className="form-group">
@@ -103,6 +129,9 @@ const ShopDetailsPage = () => {
               placeholder="Enter contact number"
               required
             />
+            {formErrors.contactNumber && (
+              <div className="error-message">{formErrors.contactNumber}</div>
+            )}
           </div>
 
           <div className="form-group">
@@ -142,6 +171,9 @@ const ShopDetailsPage = () => {
               placeholder="Street address"
               required
             />
+            {formErrors.street && (
+              <div className="error-message">{formErrors.street}</div>
+            )}
           </div>
 
           <div className="form-row">
@@ -155,6 +187,9 @@ const ShopDetailsPage = () => {
                 placeholder="City"
                 required
               />
+              {formErrors.city && (
+                <div className="error-message">{formErrors.city}</div>
+              )}
             </div>
 
             <div className="form-group">
@@ -167,6 +202,9 @@ const ShopDetailsPage = () => {
                 placeholder="State"
                 required
               />
+              {formErrors.state && (
+                <div className="error-message">{formErrors.state}</div>
+              )}
             </div>
           </div>
 
@@ -181,6 +219,9 @@ const ShopDetailsPage = () => {
                 placeholder="Pincode"
                 required
               />
+              {formErrors.pincode && (
+                <div className="error-message">{formErrors.pincode}</div>
+              )}
             </div>
 
             <div className="form-group">

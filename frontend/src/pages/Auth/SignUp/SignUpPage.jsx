@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./SignUpPage.scss";
+import ErrorMessage from "../../../components/ErrorMessage/ErrorMessage";
 
 const SignUpPage = () => {
   const [formData, setFormData] = useState({
@@ -13,6 +14,7 @@ const SignUpPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [formErrors, setFormErrors] = useState({});
   const navigate = useNavigate();
 
   // Handle input change
@@ -25,27 +27,37 @@ const SignUpPage = () => {
     if (error) setError("");
   };
 
+  const validate = () => {
+    const errors = {};
+    if (!formData.name) {
+      errors.name = "Name is required";
+    }
+    if (!formData.email) {
+      errors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      errors.email = "Enter a valid email address";
+    }
+    if (!formData.password) {
+      errors.password = "Password is required";
+    } else if (formData.password.length < 6) {
+      errors.password = "Password must be at least 6 characters";
+    }
+    if (!formData.confirmPassword) {
+      errors.confirmPassword = "Confirm your password";
+    } else if (formData.password !== formData.confirmPassword) {
+      errors.confirmPassword = "Passwords do not match";
+    }
+    return errors;
+  };
+
   // Handle signup
   const handleSignUp = async (e) => {
     e.preventDefault();
+    const errors = validate();
+    setFormErrors(errors);
+    if (Object.keys(errors).length > 0) return;
 
     const { name, email, password, confirmPassword } = formData;
-
-    // Basic validation
-    if (!name || !email || !password || !confirmPassword) {
-      setError("All fields are required");
-      return;
-    }
-
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters long");
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
-      return;
-    }
 
     try {
       setLoading(true);
@@ -97,7 +109,7 @@ const SignUpPage = () => {
         <h2>Create Account</h2>
         <p className="subtitle">Join DealBasket today!</p>
 
-        {error && <div className="error-message">{error}</div>}
+        {error && <ErrorMessage>{error}</ErrorMessage>}
         {success && (
           <div className="success-message">
             Account created successfully! Redirecting to login...
@@ -116,6 +128,7 @@ const SignUpPage = () => {
               onChange={handleChange}
               disabled={loading}
             />
+            {formErrors.name && <ErrorMessage>{formErrors.name}</ErrorMessage>}
           </div>
 
           <div className="input-group">
@@ -129,6 +142,9 @@ const SignUpPage = () => {
               onChange={handleChange}
               disabled={loading}
             />
+            {formErrors.email && (
+              <ErrorMessage>{formErrors.email}</ErrorMessage>
+            )}
           </div>
 
           <div className="input-group">
@@ -142,6 +158,9 @@ const SignUpPage = () => {
               onChange={handleChange}
               disabled={loading}
             />
+            {formErrors.password && (
+              <ErrorMessage>{formErrors.password}</ErrorMessage>
+            )}
           </div>
 
           <div className="input-group">
@@ -155,6 +174,9 @@ const SignUpPage = () => {
               onChange={handleChange}
               disabled={loading}
             />
+            {formErrors.confirmPassword && (
+              <ErrorMessage>{formErrors.confirmPassword}</ErrorMessage>
+            )}
           </div>
 
           <button type="submit" className="submit-btn" disabled={loading}>

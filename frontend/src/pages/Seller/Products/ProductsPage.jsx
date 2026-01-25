@@ -8,6 +8,7 @@ import {
   updateProduct,
   deleteProduct,
 } from "../../../api/sellerApi";
+import ErrorMessage from "../../../components/ErrorMessage/ErrorMessage";
 import "./ProductsPage.scss";
 
 const ProductsPage = () => {
@@ -30,8 +31,9 @@ const ProductsPage = () => {
   });
   const [imagePreview, setImagePreview] = useState("");
   const [subcategories, setSubcategories] = useState(
-    CATEGORY_DATA["electronics"] || []
+    CATEGORY_DATA["electronics"] || [],
   );
+  const [formErrors, setFormErrors] = useState({});
 
   useEffect(() => {
     fetchProducts();
@@ -62,8 +64,36 @@ const ProductsPage = () => {
     }
   };
 
+  const validate = () => {
+    const errors = {};
+    if (!formData.name) errors.name = "Product name is required";
+    if (!formData.category) errors.category = "Category is required";
+    if (!formData.subcategory) errors.subcategory = "Subcategory is required";
+    if (
+      !formData.actualPrice ||
+      isNaN(formData.actualPrice) ||
+      Number(formData.actualPrice) <= 0
+    ) {
+      errors.actualPrice = "Enter a valid actual price";
+    }
+    if (
+      !formData.discountedPrice ||
+      isNaN(formData.discountedPrice) ||
+      Number(formData.discountedPrice) <= 0
+    ) {
+      errors.discountedPrice = "Enter a valid discounted price";
+    }
+    if (!formData.discount) errors.discount = "Discount is required";
+    if (!editingProduct && !formData.image)
+      errors.image = "Product image is required";
+    return errors;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const errors = validate();
+    setFormErrors(errors);
+    if (Object.keys(errors).length > 0) return;
     try {
       // Convert details string to array
       const productData = {
@@ -179,7 +209,6 @@ const ProductsPage = () => {
       {showForm && (
         <form className="product-form" onSubmit={handleSubmit}>
           <h2>{editingProduct ? "Edit Product" : "Add New Product"}</h2>
-
           <div className="form-row">
             <div className="form-group">
               <label>Product Name *</label>
@@ -191,8 +220,10 @@ const ProductsPage = () => {
                 placeholder="Enter product name"
                 required
               />
+              {formErrors.name && (
+                <ErrorMessage>{formErrors.name}</ErrorMessage>
+              )}
             </div>
-
             <div className="form-group">
               <label>Quantity/Size</label>
               <input
@@ -204,7 +235,6 @@ const ProductsPage = () => {
               />
             </div>
           </div>
-
           <div className="form-group">
             <label>Product Image *</label>
             <input
@@ -214,6 +244,9 @@ const ProductsPage = () => {
               onChange={handleChange}
               required={!editingProduct}
             />
+            {formErrors.image && (
+              <ErrorMessage>{formErrors.image}</ErrorMessage>
+            )}
             {imagePreview && (
               <img
                 src={imagePreview}
@@ -222,7 +255,6 @@ const ProductsPage = () => {
               />
             )}
           </div>
-
           <div className="form-group">
             <label>Product Details (comma-separated)</label>
             <textarea
@@ -233,7 +265,6 @@ const ProductsPage = () => {
               rows="3"
             />
           </div>
-
           <div className="form-group">
             <label>Product Link (Optional)</label>
             <input
@@ -244,7 +275,6 @@ const ProductsPage = () => {
               placeholder="Link to product page or contact"
             />
           </div>
-
           <div className="form-row">
             <div className="form-group">
               <label>Category *</label>
@@ -262,8 +292,10 @@ const ProductsPage = () => {
                     </option>
                   ))}
               </select>
+              {formErrors.category && (
+                <ErrorMessage>{formErrors.category}</ErrorMessage>
+              )}
             </div>
-
             <div className="form-group">
               <label>Subcategory *</label>
               <select
@@ -280,9 +312,11 @@ const ProductsPage = () => {
                   </option>
                 ))}
               </select>
+              {formErrors.subcategory && (
+                <ErrorMessage>{formErrors.subcategory}</ErrorMessage>
+              )}
             </div>
           </div>
-
           <div className="form-row">
             <div className="form-group">
               <label>Actual Price (₹) *</label>
@@ -294,8 +328,10 @@ const ProductsPage = () => {
                 placeholder="Original price"
                 required
               />
+              {formErrors.actualPrice && (
+                <ErrorMessage>{formErrors.actualPrice}</ErrorMessage>
+              )}
             </div>
-
             <div className="form-group">
               <label>Discounted Price (₹) *</label>
               <input
@@ -306,8 +342,10 @@ const ProductsPage = () => {
                 placeholder="Selling price"
                 required
               />
+              {formErrors.discountedPrice && (
+                <ErrorMessage>{formErrors.discountedPrice}</ErrorMessage>
+              )}
             </div>
-
             <div className="form-group">
               <label>Discount *</label>
               <input
@@ -318,9 +356,11 @@ const ProductsPage = () => {
                 placeholder="e.g., 20% off"
                 required
               />
+              {formErrors.discount && (
+                <ErrorMessage>{formErrors.discount}</ErrorMessage>
+              )}
             </div>
           </div>
-
           <button type="submit" className="submit-btn">
             {editingProduct ? "Update Product" : "Add Product"}
           </button>

@@ -1,0 +1,22 @@
+.error-message-ui {
+  color: #fff;
+  background: #e74c3c;
+  border-radius: 6px;
+  padding: 8px 14px;
+  margin: 6px 0 0 0;
+  font-size: 0.97rem;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.08);
+  border: 1px solid #e74c3c;
+  letter-spacing: 0.01em;
+  transition: background 0.2s;
+  animation: shake 0.2s 1;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  50% { transform: translateX(4px); }
+  75% { transform: translateX(-2px); }
+  100% { transform: translateX(0); }
+}

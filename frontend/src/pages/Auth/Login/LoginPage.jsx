@@ -2,17 +2,35 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./LoginPage.scss";
 import { loginUser } from "../../../api/authApi";
+import ErrorMessage from "../../../components/ErrorMessage/ErrorMessage";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [formErrors, setFormErrors] = useState({});
   const navigate = useNavigate();
+
+  const validate = () => {
+    const errors = {};
+    if (!email) {
+      errors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      errors.email = "Enter a valid email address";
+    }
+    if (!password) {
+      errors.password = "Password is required";
+    }
+    return errors;
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
+    const errors = validate();
+    setFormErrors(errors);
+    if (Object.keys(errors).length > 0) return;
     setLoading(true);
 
     try {
@@ -28,7 +46,7 @@ const LoginPage = () => {
       navigate("/");
     } catch (err) {
       setError(
-        err.response?.data?.message || "Login failed. Please try again."
+        err.response?.data?.message || "Login failed. Please try again.",
       );
     } finally {
       setLoading(false);
@@ -41,7 +59,7 @@ const LoginPage = () => {
         <h2>Welcome Back!</h2>
         <p className="subtitle">Login to continue to DealBasket</p>
 
-        {error && <div className="error-message">{error}</div>}
+        {error && <ErrorMessage>{error}</ErrorMessage>}
 
         <form className="login-form" onSubmit={handleLogin}>
           <div className="input-group">
@@ -55,6 +73,9 @@ const LoginPage = () => {
               required
               disabled={loading}
             />
+            {formErrors.email && (
+              <ErrorMessage>{formErrors.email}</ErrorMessage>
+            )}
           </div>
 
           <div className="input-group">
@@ -68,6 +89,9 @@ const LoginPage = () => {
               required
               disabled={loading}
             />
+            {formErrors.password && (
+              <ErrorMessage>{formErrors.password}</ErrorMessage>
+            )}
           </div>
 
           <button type="submit" className="submit-btn" disabled={loading}>
