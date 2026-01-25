@@ -53,8 +53,15 @@ export const getSellerShop = async (req, res) => {
 
 export const getAllProducts = async (req, res) => {
   try {
-    const products = await getAllProductsService(req.query);
-    res.json(products);
+    const { page = 1, limit = 20 } = req.query;
+    const pagination = { page: parseInt(page), limit: parseInt(limit) };
+    const products = await getAllProductsService(req.query, pagination);
+    res.json({
+      products,
+      currentPage: pagination.page,
+      limit: pagination.limit,
+      hasMore: products.length === pagination.limit,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

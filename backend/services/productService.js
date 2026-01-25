@@ -10,8 +10,11 @@ export const getSellerShopService = async (sellerId) => {
   return seller;
 };
 
-export const getAllProductsService = async (filters) => {
+export const getAllProductsService = async (filters, pagination = {}) => {
   const { category, subcategory } = filters;
+  const { page = 1, limit = 20 } = pagination;
+  const skip = (page - 1) * limit;
+
   const filter = {};
   if (category && category !== "all") {
     filter.category = category;
@@ -19,8 +22,15 @@ export const getAllProductsService = async (filters) => {
   if (subcategory) {
     filter.subcategory = subcategory;
   }
-  const scrapedProducts = await Product.find(filter);
-  const sellerProducts = await SellerProduct.find(filter);
+
+  const scrapedProducts = await Product.find(filter)
+    .limit(limit)
+    .skip(skip)
+    .lean();
+  const sellerProducts = await SellerProduct.find(filter)
+    .limit(limit)
+    .skip(skip)
+    .lean();
   return [...scrapedProducts, ...sellerProducts];
 };
 

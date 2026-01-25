@@ -79,15 +79,20 @@ export const addProductService = async (userId, productData) => {
   return { message: "Product added successfully", product };
 };
 
-export const getSellerProductsService = async (userId) => {
-  const seller = await Seller.findOne({ userId });
+export const getSellerProductsService = async (userId, pagination = {}) => {
+  const { page = 1, limit = 10 } = pagination;
+  const skip = (page - 1) * limit;
+
+  const seller = await Seller.findOne({ userId }).lean();
   if (!seller) {
     throw new Error("Seller not found");
   }
 
-  const products = await SellerProduct.find({ sellerId: seller._id }).sort({
-    createdAt: -1,
-  });
+  const products = await SellerProduct.find({ sellerId: seller._id })
+    .sort({ createdAt: -1 })
+    .limit(limit)
+    .skip(skip)
+    .lean();
 
   return products;
 };

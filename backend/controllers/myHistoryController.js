@@ -39,8 +39,15 @@ export const getMyHistory = async (req, res) => {
         .json({ message: "You must be logged in to view your history." });
     }
 
-    const history = await getMyHistoryService(req.user._id);
-    res.json(history);
+    const { page = 1, limit = 10 } = req.query;
+    const pagination = { page: parseInt(page), limit: parseInt(limit) };
+    const history = await getMyHistoryService(req.user._id, pagination);
+    res.json({
+      history,
+      currentPage: pagination.page,
+      limit: pagination.limit,
+      hasMore: history.length === pagination.limit,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

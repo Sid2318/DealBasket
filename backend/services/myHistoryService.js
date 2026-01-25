@@ -45,8 +45,15 @@ export const savePurchaseService = async (userId, purchaseData) => {
   };
 };
 
-export const getMyHistoryService = async (userId) => {
-  const history = await MyHistory.find({ userId }).sort({ purchasedAt: -1 });
+export const getMyHistoryService = async (userId, pagination = {}) => {
+  const { page = 1, limit = 10 } = pagination;
+  const skip = (page - 1) * limit;
+
+  const history = await MyHistory.find({ userId })
+    .sort({ purchasedAt: -1 })
+    .limit(limit)
+    .skip(skip)
+    .lean();
   return history;
 };
 

@@ -134,8 +134,15 @@ export const addProduct = async (req, res) => {
 
 export const getSellerProducts = async (req, res) => {
   try {
-    const products = await getSellerProductsService(req.user._id);
-    res.status(200).json(products);
+    const { page = 1, limit = 10 } = req.query;
+    const pagination = { page: parseInt(page), limit: parseInt(limit) };
+    const products = await getSellerProductsService(req.user._id, pagination);
+    res.status(200).json({
+      products,
+      currentPage: pagination.page,
+      limit: pagination.limit,
+      hasMore: products.length === pagination.limit,
+    });
   } catch (error) {
     if (error.message === "Seller not found") {
       return res.status(404).json({ message: error.message });

@@ -9,11 +9,22 @@ import sellerRoutes from "./routes/sellerRoutes.js";
 import connectDB from "./config/db.js";
 import { runAggregateScraperAndStore } from "./services/scraperService.js";
 import logger from "./utils/logger.js";
+import {
+  setupPerformanceMiddleware,
+  compressResponse,
+} from "./middlewares/performanceMiddleware.js";
 
 dotenv.config();
 
 const app = express();
-app.use(cors());
+
+// Setup performance middleware
+setupPerformanceMiddleware(app);
+
+// Compress responses
+app.use(compressResponse);
+
+// Increase payload limit for better performance
 app.use(express.json({ limit: "10mb" }));
 
 const PORT = process.env.PORT || 3000;
