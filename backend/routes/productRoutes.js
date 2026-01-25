@@ -8,18 +8,11 @@ import {
   createProduct,
   seedProducts,
 } from "../controllers/productController.js";
-import { body, param } from "express-validator";
-import validateRequest from "../middlewares/validateRequest.js";
 
 const router = express.Router();
 
 // Get seller shop details by sellerId
-router.get(
-  "/shop/:sellerId",
-  [param("sellerId").isMongoId().withMessage("Valid seller ID required")],
-  validateRequest,
-  getSellerShop,
-);
+router.get("/shop/:sellerId", getSellerShop);
 
 // Get all products (scraped + seller products)
 router.get("/", getAllProducts);
@@ -31,24 +24,12 @@ router.get("/subcategory/:subcategory", getProductsBySubcategory);
 router.get("/categories/all", getAllCategories);
 
 // Get single product (check both Product and SellerProduct)
-router.get(
-  "/:id",
-  [param("id").isMongoId().withMessage("Valid product ID required")],
-  validateRequest,
-  getProductById,
-);
+router.get("/:id", getProductById);
 
 // Create product (for testing)
-router.post(
-  "/",
-  [
-    body("name").notEmpty().withMessage("Product name is required"),
-    body("category").notEmpty().withMessage("Category is required"),
-    body("image").optional().isURL().withMessage("Image must be a valid URL"),
-  ],
-  validateRequest,
-  createProduct,
-);
+router.post("/", createProduct);
 
+// Seed data (for testing)
+router.post("/seed", seedProducts);
 
 export default router;

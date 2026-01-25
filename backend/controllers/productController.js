@@ -1,107 +1,127 @@
-import Product from "../models/Product.js";
-import SellerProduct from "../models/SellerProduct.js";
-import Seller from "../models/Seller.js";
+import {
+  getSellerShopService,
+  getAllProductsService,
+  getProductsBySubcategoryService,
+  getAllCategoriesService,
+  getProductByIdService,
+  createProductService,
+  seedProductsService,
+} from "../services/productService.js";
 
-// Get seller shop details by sellerId
+const validateMongoId = (id, fieldName) => {
+  const mongoIdPattern = /^[a-f\d]{24}$/i;
+  if (!id || !mongoIdPattern.test(id)) {
+    return [`Valid ${fieldName} ID required`];
+  }
+  return [];
+};
+
+const validateProductCreation = (data) => {
+  const { name, category } = data;
+  const errors = [];
+
+  if (!name || name.trim() === "") {
+    errors.push("Product name is required");
+  }
+
+  if (!category || category.trim() === "") {
+    errors.push("Category is required");
+  }
+
+  return errors;
+};
+
 export const getSellerShop = async (req, res) => {
   try {
-    const seller = await Seller.findById(req.params.sellerId);
-    if (!seller) return res.status(404).json({ message: "Seller not found" });
+    const idErrors = validateMongoId(req.params.sellerId, "seller");
+    if (idErrors.length > 0) {
+      return res.status(400).json({
+        message: "Validation failed",
+        errors: idErrors,
+      });
+    }
+
+    const seller = await getSellerShopService(req.params.sellerId);
     res.json(seller);
   } catch (error) {
+    if (error.message === "Seller not found") {
+      return res.status(404).json({ message: error.message });
+    }
     res.status(500).json({ message: error.message });
   }
 };
 
-// Get all products (scraped + seller products)
 export const getAllProducts = async (req, res) => {
   try {
-    const { category, subcategory } = req.query;
-    const filter = {};
-    if (category && category !== "all") {
-      filter.category = category;
-    }
-    if (subcategory) {
-      filter.subcategory = subcategory;
-    }
-    const scrapedProducts = await Product.find(filter);
-    const sellerProducts = await SellerProduct.find(filter);
-    const allProducts = [...scrapedProducts, ...sellerProducts];
-    res.json(allProducts);
+    const products = await getAllProductsService(req.query);
+    res.json(products);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// Get products by subcategory (scraped + seller products)
 export const getProductsBySubcategory = async (req, res) => {
   try {
-    const scrapedProducts = await Product.find({
-      subcategory: req.params.subcategory,
-    });
-    const sellerProducts = await SellerProduct.find({
-      subcategory: req.params.subcategory,
-    }).populate("sellerId", "shopName");
-    const sellerProductsWithShop = sellerProducts.map((p) => ({
-      ...p.toObject(),
-      shopName: p.sellerId?.shopName || undefined,
-    }));
-    const allProducts = [...scrapedProducts, ...sellerProductsWithShop];
-    res.json(allProducts);
+    const products = await getProductsBySubcategoryService(
+      req.params.subcategory,
+    );
+    res.json(products);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// Get all categories with subcategories
 export const getAllCategories = async (req, res) => {
   try {
-    const categories = await Product.aggregate([
-      {
-        $group: {
-          _id: "$category",
-          subcategories: { $addToSet: "$subcategory" },
-          count: { $sum: 1 },
-        },
-      },
-      {
-        $sort: { _id: 1 },
-      },
-    ]);
+    const categories = await getAllCategoriesService();
     res.json(categories);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// Get single product (check both Product and SellerProduct)
 export const getProductById = async (req, res) => {
   try {
-    let product = await Product.findById(req.params.id);
-    if (!product) {
-      product = await SellerProduct.findById(req.params.id).populate(
-        "sellerId",
-        "shopName contactNumber address shopDescription",
-      );
-      if (!product) {
-        return res
-          .status(404)
-          .json({ message: "Product not found in both collections" });
-      }
+    const idErrors = validateMongoId(req.params.id, "product");
+    if (idErrors.length > 0) {
+      return res.status(400).json({
+        message: "Validation failed",
+        errors: idErrors,
+      });
     }
+
+    const product = await getProductByIdService(req.params.id);
     res.json(product);
   } catch (error) {
+    if (error.message === "Product not found in both collections") {
+      return res.status(404).json({ message: error.message });
+    }
     res.status(500).json({ message: error.message });
   }
 };
 
-// Create product (for testing)
 export const createProduct = async (req, res) => {
   try {
-    const product = await Product.create(req.body);
+    const validationErrors = validateProductCreation(req.body);
+    if (validationErrors.length > 0) {
+      return res.status(400).json({
+        message: "Validation failed",
+        errors: validationErrors,
+      });
+    }
+
+    const product = await createProductService(req.body);
     res.status(201).json(product);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
 
+export const seedProducts = async (req, res) => {
+  try {
+    const result = await seedProductsService();
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

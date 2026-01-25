@@ -8,6 +8,7 @@ import myHistoryRoutes from "./routes/myHistoryRoutes.js";
 import sellerRoutes from "./routes/sellerRoutes.js";
 import connectDB from "./config/db.js";
 import { runAggregateScraperAndStore } from "./services/scraperService.js";
+import logger from "./utils/logger.js";
 
 dotenv.config();
 
@@ -29,18 +30,18 @@ const startServer = async () => {
     app.use("/seller", sellerRoutes);
 
     app.listen(PORT, () => {
-      console.log(`🚀 Server running on http://localhost:${PORT}`);
+      logger.info(`🚀 Server running on http://localhost:${PORT}`);
 
       // Run aggregate scraper in background after server starts
-      // console.log("\n🔄 Starting background scraper...\n");
+      // logger.info("\n🔄 Starting background scraper...\n");
       // runAggregateScraperAndStore()
       //   .then(() =>
-      //     console.log("✅ Background scraper completed successfully\n")
+      //     logger.info("✅ Background scraper completed successfully\n")
       //   )
-      //   .catch((err) => console.error("❌ Background scraper error:", err));
+      //   .catch((err) => logger.error("❌ Background scraper error:", { error: err.message }));
     });
   } catch (error) {
-    console.error("❌ Error starting server:", error);
+    logger.error("❌ Error starting server:", { error: error.message });
     process.exit(1);
   }
 };
