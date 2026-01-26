@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { registerSeller } from "../../../api/sellerApi";
+import { useAuth } from "../../../hooks/useAuth";
 import "./ShopDetailsPage.scss";
 
 const ShopDetailsPage = () => {
   const navigate = useNavigate();
+  const { refreshUserData } = useAuth();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     shopName: "",
@@ -64,14 +66,11 @@ const ShopDetailsPage = () => {
     try {
       await registerSeller(formData);
 
-      // Update user role in localStorage
-      const user = JSON.parse(localStorage.getItem("user"));
-      user.role = "seller";
-      localStorage.setItem("user", JSON.stringify(user));
+      // Refresh user data to get updated role
+      await refreshUserData();
 
       alert("✅ Seller registration successful!");
       navigate("/");
-      window.location.reload(); // Refresh to update nav
     } catch (error) {
       alert(error.response?.data?.message || "Registration failed");
     } finally {

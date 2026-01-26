@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./LoginPage.scss";
-import { loginUser } from "../../../api/authApi";
+import { useAuth } from "../../../hooks/useAuth";
 import ErrorMessage from "../../../components/ErrorMessage/ErrorMessage";
 
 const LoginPage = () => {
@@ -11,6 +11,7 @@ const LoginPage = () => {
   const [error, setError] = useState("");
   const [formErrors, setFormErrors] = useState({});
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const validate = () => {
     const errors = {};
@@ -31,23 +32,21 @@ const LoginPage = () => {
     const errors = validate();
     setFormErrors(errors);
     if (Object.keys(errors).length > 0) return;
+
     setLoading(true);
 
     try {
-      const data = await loginUser({ email, password });
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
-      console.log(data);
+      const result = await login({ email, password });
 
-      // Dispatch custom event to update navbar
-      window.dispatchEvent(new Event("authChange"));
-
-      // Redirect to home page after successful login
-      navigate("/");
+      if (result.success) {
+        // Login successful, navigate to home
+        navigate("/");
+      } else {
+        // Login failed, show error
+        setError(result.error);
+      }
     } catch (err) {
-      setError(
-        err.response?.data?.message || "Login failed. Please try again.",
-      );
+      setError("Login failed. Please try again.");
     } finally {
       setLoading(false);
     }

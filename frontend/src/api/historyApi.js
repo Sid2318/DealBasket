@@ -1,7 +1,7 @@
 import api from "./axios";
 
 export const savePurchase = async (purchaseData) => {
-  const response = await api.post("/myhistory/purchase", purchaseData);
+  const response = await api.post("/myhistory/save", purchaseData);
   return response.data;
 };
 

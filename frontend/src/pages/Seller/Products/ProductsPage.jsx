@@ -9,10 +9,12 @@ import {
   deleteProduct,
 } from "../../../api/sellerApi";
 import ErrorMessage from "../../../components/ErrorMessage/ErrorMessage";
+import { useAuth } from "../../../hooks/useAuth";
 import "./ProductsPage.scss";
 
 const ProductsPage = () => {
   const navigate = useNavigate();
+  const { user, isLoggedIn, loading: authLoading } = useAuth();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -36,15 +38,33 @@ const ProductsPage = () => {
   const [formErrors, setFormErrors] = useState({});
 
   useEffect(() => {
+    // Wait for auth to load
+    if (authLoading) return;
+
+    // Check if user is authenticated and is a seller
+    if (!isLoggedIn) {
+      console.error("User not authenticated");
+      navigate("/login");
+      return;
+    }
+
+    if (user?.role !== "seller") {
+      console.error("User is not a seller");
+      navigate("/");
+      return;
+    }
+
+    // Fetch products for authenticated seller
     fetchProducts();
-  }, []);
+  }, [isLoggedIn, user, authLoading, navigate]);
 
   const fetchProducts = async () => {
     try {
+      setLoading(true);
       const data = await getSellerProducts();
-      setProducts(data);
+      setProducts(data.products || []);
     } catch (error) {
-      console.error(error);
+      console.error("Error fetching products:", error);
     } finally {
       setLoading(false);
     }
@@ -182,10 +202,71 @@ const ProductsPage = () => {
     setSubcategories(CATEGORY_DATA["electronics"] || []);
   };
 
+  // Show loading while auth is loading
+  if (authLoading) {
+    return (
+      <div className="products-page">
+        <div style={{ textAlign: "center", padding: "50px" }}>
+          <Loader />
+          <p>Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show loading while fetching products
   if (loading) {
     return (
       <div className="products-page">
-        <Loader />
+        <div style={{ textAlign: "center", padding: "50px" }}>
+          <Loader />
+          <p>Loading seller products...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Check authentication after auth has loaded
+  if (!isLoggedIn) {
+    return (
+      <div className="products-page">
+        <div style={{ textAlign: "center", padding: "50px" }}>
+          <h2>🔒 Authentication Required</h2>
+          <p>You need to be logged in to access this page.</p>
+          <button
+            onClick={() => navigate("/login")}
+            style={{ padding: "10px 20px", marginTop: "20px" }}
+          >
+            Go to Login
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Check if user is a seller
+  if (user?.role !== "seller") {
+    return (
+      <div className="products-page">
+        <div style={{ textAlign: "center", padding: "50px" }}>
+          <h2>🏪 Seller Access Required</h2>
+          <p>You need to be registered as a seller to access this page.</p>
+          <p>
+            Current role: <strong>{user?.role || "unknown"}</strong>
+          </p>
+          <button
+            onClick={() => navigate("/seller/register")}
+            style={{ padding: "10px 20px", margin: "10px" }}
+          >
+            Register as Seller
+          </button>
+          <button
+            onClick={() => navigate("/")}
+            style={{ padding: "10px 20px", margin: "10px" }}
+          >
+            Go to Home
+          </button>
+        </div>
       </div>
     );
   }

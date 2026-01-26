@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getProductsBySubcategory, getAllProducts } from "../../api/productApi";
 import { savePurchase } from "../../api/historyApi";
+import { useAuth } from "../../hooks/useAuth";
 import LoginModal from "../../components/LoginModal/LoginModal";
 import Loader from "../../components/Loader/Loader";
 import "./SubcategoryPage.scss";
@@ -9,6 +10,7 @@ import "./SubcategoryPage.scss";
 const SubcategoryPage = () => {
   const { subcategory } = useParams();
   const navigate = useNavigate();
+  const { isLoggedIn } = useAuth();
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -97,11 +99,11 @@ const SubcategoryPage = () => {
     // Sort by price
     if (sortOrder === "lowToHigh") {
       filtered.sort(
-        (a, b) => parsePrice(a.discountedPrice) - parsePrice(b.discountedPrice)
+        (a, b) => parsePrice(a.discountedPrice) - parsePrice(b.discountedPrice),
       );
     } else if (sortOrder === "highToLow") {
       filtered.sort(
-        (a, b) => parsePrice(b.discountedPrice) - parsePrice(a.discountedPrice)
+        (a, b) => parsePrice(b.discountedPrice) - parsePrice(a.discountedPrice),
       );
     }
 
@@ -116,9 +118,8 @@ const SubcategoryPage = () => {
   const handleBuyNow = async (e, product) => {
     e.stopPropagation(); // Prevent navigation to product details
 
-    // Check if user is logged in
-    const token = localStorage.getItem("token");
-    if (!token) {
+    // Check if user is logged in using auth hook
+    if (!isLoggedIn) {
       setShowLoginModal(true);
       return;
     }
@@ -144,21 +145,20 @@ const SubcategoryPage = () => {
       await savePurchase(purchaseData);
 
       alert(
-        `✅ Purchase saved! You saved ₹${savedAmount.toLocaleString("en-IN")}!`
+        `✅ Purchase saved! You saved ₹${savedAmount.toLocaleString("en-IN")}!`,
       );
     } catch (error) {
       alert(
         `Failed to save purchase: ${
           error.response?.data?.message || error.message
-        }`
+        }`,
       );
     }
   };
 
   const handleProductClick = (product) => {
-    // Check if user is logged in
-    const token = localStorage.getItem("token");
-    if (!token) {
+    // Check if user is logged in using auth hook
+    if (!isLoggedIn) {
       setShowLoginModal(true);
       return;
     }

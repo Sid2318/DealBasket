@@ -26,7 +26,6 @@ const AppRouter = () => (
         <Route path="signup" element={<SignUpPage />} />
         <Route path="subcategory/:subcategory" element={<SubcategoryPage />} />
         <Route path="history" element={<History />} />
-        {/* Dashboard route removed */}
 
         {/* Seller Routes */}
         <Route path="seller/register" element={<ShopDetailsPage />} />

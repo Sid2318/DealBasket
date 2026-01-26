@@ -1,23 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
 import "./ProfileDrawer.scss";
 
 const ProfileDrawer = ({ isOpen, onClose, onLogout }) => {
   const navigate = useNavigate();
+  const { user: authUser } = useAuth();
   const [user, setUser] = useState({ name: "User", email: "user@example.com" });
 
   useEffect(() => {
-    // Get user data from localStorage
-    const userData = localStorage.getItem("user");
-    if (userData) {
-      try {
-        const parsedUser = JSON.parse(userData);
-        setUser(parsedUser);
-      } catch (error) {
-        console.error("Error parsing user data:", error);
-      }
+    // Get user data from auth hook
+    if (authUser) {
+      setUser(authUser);
     }
-  }, [isOpen]);
+  }, [authUser, isOpen]);
 
   const handleLogout = () => {
     onLogout();

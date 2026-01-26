@@ -1,53 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Navbar.scss";
 import ProfileDrawer from "../ProfileDrawer/ProfileDrawer";
+import { useAuth } from "../../hooks/useAuth";
 
 const Navbar = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isSeller, setIsSeller] = useState(false);
   const [showDrawer, setShowDrawer] = useState(false);
   const navigate = useNavigate();
+  const { user, isLoggedIn, logout } = useAuth();
 
-  // Check if user is logged in on component mount and when storage changes
-  useEffect(() => {
-    const checkAuth = () => {
-      const token = localStorage.getItem("token");
-      const user = localStorage.getItem("user");
-      setIsLoggedIn(!!token);
+  const isSeller = user?.role === "seller";
 
-      if (user) {
-        try {
-          const userData = JSON.parse(user);
-          setIsSeller(userData.role === "seller");
-        } catch (error) {
-          console.error("Error parsing user data:", error);
-        }
-      }
-    };
-
-    checkAuth();
-
-    // Listen for storage changes (in case user logs in/out in another tab)
-    window.addEventListener("storage", checkAuth);
-
-    // Custom event for same-tab login/logout
-    window.addEventListener("authChange", checkAuth);
-
-    return () => {
-      window.removeEventListener("storage", checkAuth);
-      window.removeEventListener("authChange", checkAuth);
-    };
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    setIsLoggedIn(false);
-
-    // Dispatch custom event for auth change
-    window.dispatchEvent(new Event("authChange"));
-
+  const handleLogout = async () => {
+    await logout();
+    setShowDrawer(false);
     navigate("/");
   };
 
