@@ -7,6 +7,7 @@ import {
   createProductService,
   seedProductsService,
 } from "../services/productService.js";
+import logger from "../utils/logger.js";
 
 const validateMongoId = (id, fieldName) => {
   const mongoIdPattern = /^[a-f\d]{24}$/i;
@@ -32,16 +33,35 @@ const validateProductCreation = (data) => {
 };
 
 export const getSellerShop = async (req, res) => {
+  const { sellerId } = req.params;
+  logger.info("🏢 Getting seller shop details", {
+    sellerId,
+    ip: req.ip,
+    userAgent: req.get("User-Agent"),
+  });
+
   try {
+    logger.debug("📝 Validating seller ID", { sellerId });
     const idErrors = validateMongoId(req.params.sellerId, "seller");
     if (idErrors.length > 0) {
+      logger.warn("❌ Invalid seller ID provided", {
+        sellerId,
+        errors: idErrors,
+      });
       return res.status(400).json({
         message: "Validation failed",
         errors: idErrors,
       });
     }
 
+    logger.info("🔍 Fetching seller shop data", { sellerId });
     const seller = await getSellerShopService(req.params.sellerId);
+
+    logger.info("✅ Seller shop retrieved successfully", {
+      sellerId,
+      shopName: seller?.shopName,
+      productsCount: seller?.products?.length || 0,
+    });
     res.json(seller);
   } catch (error) {
     if (error.message === "Seller not found") {
@@ -52,10 +72,29 @@ export const getSellerShop = async (req, res) => {
 };
 
 export const getAllProducts = async (req, res) => {
+  logger.info("📋 Getting all products", {
+    query: req.query,
+    ip: req.ip,
+  });
+
   try {
     const { page = 1, limit = 20 } = req.query;
     const pagination = { page: parseInt(page), limit: parseInt(limit) };
+
+    logger.debug("📊 Processing product request with pagination", {
+      pagination,
+      filters: req.query,
+    });
+
     const products = await getAllProductsService(req.query, pagination);
+
+    logger.info("✅ Products retrieved successfully", {
+      count: products.length,
+      page: pagination.page,
+      limit: pagination.limit,
+      hasMore: products.length === pagination.limit,
+    });
+
     res.json({
       products,
       currentPage: pagination.page,
@@ -68,10 +107,21 @@ export const getAllProducts = async (req, res) => {
 };
 
 export const getProductsBySubcategory = async (req, res) => {
+  const { subcategory } = req.params;
+  logger.info("📎 Getting products by subcategory", {
+    subcategory,
+    ip: req.ip,
+  });
+
   try {
-    const products = await getProductsBySubcategoryService(
-      req.params.subcategory,
-    );
+    logger.debug("🔍 Fetching products for subcategory", { subcategory });
+    const products = await getProductsBySubcategoryService(subcategory);
+
+    logger.info("✅ Subcategory products retrieved successfully", {
+      subcategory,
+      count: products.length,
+    });
+
     res.json(products);
   } catch (error) {
     res.status(500).json({ message: error.message });

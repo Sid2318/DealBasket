@@ -2,6 +2,7 @@ import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
+import logger from "../utils/logger.js";
 
 // Generate JWT Access Token (short-lived)
 const generateAccessToken = (userId) => {
@@ -25,15 +26,22 @@ const generateSecureToken = () => {
 export const signupUser = async (userData) => {
   const { name, email, password } = userData;
 
+  logger.info("🔐 Starting user registration process", { email, name });
+
   // Check if user exists
+  logger.debug("🔍 Checking if user already exists", { email });
   const existingUser = await User.findOne({ email });
   if (existingUser) {
+    logger.warn("⚠️ User registration failed - user already exists", { email });
     throw new Error("User already exists");
   }
 
+  logger.debug("✅ User email is available", { email });
+  logger.debug("🔒 Hashing user password");
   // Hash password
   const hashedPassword = await bcrypt.hash(password, 12); // Increased rounds for security
 
+  logger.info("💾 Creating new user account", { email, name });
   // Create user
   const user = await User.create({
     name,
@@ -41,30 +49,65 @@ export const signupUser = async (userData) => {
     password: hashedPassword,
   });
 
+  logger.info("🎉 User registration completed successfully", {
+    email,
+    name,
+    userId: user._id,
+  });
   return { message: "User registered successfully" };
 };
 
 export const loginUser = async (credentials) => {
   const { email, password } = credentials;
 
+  logger.info("🔑 Starting user authentication process", { email });
+
   // Find user
+  logger.debug("🔍 Looking up user by email", { email });
   const user = await User.findOne({ email });
   if (!user) {
+    logger.warn("❌ Authentication failed - user not found", { email });
     throw new Error("Invalid credentials");
   }
+
+  logger.debug("✅ User found, verifying password", {
+    email,
+    userId: user._id,
+  });
 
   // Compare password
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
+    logger.warn("❌ Authentication failed - invalid password", {
+      email,
+      userId: user._id,
+    });
     throw new Error("Invalid credentials");
   }
+
+  logger.debug("🔐 Password verified, generating tokens", {
+    email,
+    userId: user._id,
+  });
 
   // Generate tokens
   const accessToken = generateAccessToken(user._id);
   const refreshToken = generateRefreshToken(user._id);
 
+  logger.debug("💾 Storing refresh token in database", {
+    email,
+    userId: user._id,
+  });
+
   // Store refresh token in database
   await user.addRefreshToken(refreshToken);
+
+  logger.info("🎉 User authentication completed successfully", {
+    email,
+    userId: user._id,
+    name: user.name,
+    role: user.role,
+  });
 
   return {
     message: "Login successful",

@@ -55,16 +55,37 @@ const getCookieOptions = () => {
 };
 
 export const signup = async (req, res) => {
+  const { email, name } = req.body;
+  logger.info("🔐 Signup attempt initiated", {
+    email,
+    name,
+    ip: req.ip,
+    userAgent: req.get("User-Agent"),
+  });
+
   try {
+    logger.debug("📝 Validating signup data", { email });
     const validationErrors = validateSignup(req.body);
     if (validationErrors.length > 0) {
+      logger.warn("❌ Signup validation failed", {
+        email,
+        errors: validationErrors,
+      });
       return res.status(400).json({
         message: "Validation failed",
         errors: validationErrors,
       });
     }
 
+    logger.info("✅ Signup validation passed", { email });
+    logger.info("🚀 Creating new user account", { email });
     const result = await signupUser(req.body);
+
+    logger.info("🎉 User account created successfully", {
+      email,
+      userId: result.user?.id,
+      name,
+    });
     res.status(201).json(result);
   } catch (error) {
     if (error.message === "User already exists") {
@@ -76,25 +97,46 @@ export const signup = async (req, res) => {
 };
 
 export const login = async (req, res) => {
+  const { email } = req.body;
+  logger.info("🔑 Login attempt initiated", {
+    email,
+    ip: req.ip,
+    userAgent: req.get("User-Agent"),
+  });
+
   try {
+    logger.debug("📝 Validating login credentials", { email });
     const validationErrors = validateLogin(req.body);
     if (validationErrors.length > 0) {
+      logger.warn("❌ Login validation failed", {
+        email,
+        errors: validationErrors,
+      });
       return res.status(400).json({
         message: "Validation failed",
         errors: validationErrors,
       });
     }
 
-    logger.info("Login attempt for email:", { email: req.body.email });
+    logger.info("✅ Login validation passed", { email });
+    logger.info("🔐 Authenticating user credentials", { email });
     const result = await loginUser(req.body);
 
+    logger.debug("🍪 Setting refresh token cookie", {
+      email,
+      userId: result.user?.id,
+    });
     // Set refresh token in HTTP-only cookie
     res.cookie("refreshToken", result.refreshToken, getCookieOptions());
 
     // Remove refresh token from response body for security
     const { refreshToken, ...responseData } = result;
 
-    logger.info("Login successful for user:", { email: req.body.email });
+    logger.info("🎉 Login successful", {
+      email,
+      userId: result.user?.id,
+      name: result.user?.name,
+    });
     res.json(responseData);
   } catch (error) {
     if (error.message === "Invalid credentials") {
@@ -110,16 +152,28 @@ export const login = async (req, res) => {
 
 // Refresh access token
 export const refreshToken = async (req, res) => {
+  logger.info("🔄 Token refresh attempt initiated", {
+    ip: req.ip,
+    userAgent: req.get("User-Agent"),
+  });
+
   try {
     const refreshToken = req.cookies.refreshToken;
+    logger.debug("🍪 Checking refresh token in cookies");
 
     if (!refreshToken) {
+      logger.warn("❌ Refresh token not found in cookies", {
+        ip: req.ip,
+      });
       return res.status(401).json({ message: "Refresh token not found" });
     }
 
+    logger.debug("✅ Refresh token found, processing...");
     const result = await refreshAccessToken(refreshToken);
-    logger.info("Token refreshed successfully for user:", {
+
+    logger.info("🎉 Token refreshed successfully", {
       userId: result.user.id,
+      email: result.user.email,
     });
 
     res.json(result);

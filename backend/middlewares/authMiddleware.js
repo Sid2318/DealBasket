@@ -5,6 +5,13 @@ import { verifyAccessToken } from "../services/authService.js";
 
 // Protect routes (JWT authentication using access token)
 export const protect = async (req, res, next) => {
+  logger.info("🔒 Authentication check initiated", {
+    path: req.path,
+    method: req.method,
+    ip: req.ip,
+    userAgent: req.get("User-Agent"),
+  });
+
   let token;
 
   if (
@@ -12,11 +19,20 @@ export const protect = async (req, res, next) => {
     req.headers.authorization.startsWith("Bearer")
   ) {
     try {
+      logger.debug("📄 Extracting token from Authorization header");
       // Get access token from header
       token = req.headers.authorization.split(" ")[1];
 
+      logger.debug("🔍 Verifying access token", {
+        tokenPreview: token ? `${token.substring(0, 10)}...` : "no token",
+      });
+
       // Verify access token using dedicated secret
       const decoded = verifyAccessToken(token);
+
+      logger.debug("✅ Token verified, fetching user data", {
+        userId: decoded.id,
+      });
 
       // Get user from the token (exclude password and refresh tokens)
       req.user = await User.findById(decoded.id).select(
@@ -24,20 +40,38 @@ export const protect = async (req, res, next) => {
       );
 
       if (!req.user) {
+        logger.warn("⚠️ Authentication failed - user not found", {
+          userId: decoded.id,
+          path: req.path,
+        });
         return res.status(401).json({ message: "User not found" });
       }
 
+      logger.info("🎉 Authentication successful", {
+        userId: req.user._id,
+        email: req.user.email,
+        name: req.user.name,
+        role: req.user.role,
+        path: req.path,
+      });
+
       next();
     } catch (error) {
-      logger.error("Access token verification failed:", {
+      logger.error("❌ Access token verification failed", {
         error: error.message,
-        token: token ? `${token.substring(0, 10)}...` : "no token",
+        tokenPreview: token ? `${token.substring(0, 10)}...` : "no token",
+        path: req.path,
+        ip: req.ip,
       });
 
       if (
         error.message === "Invalid access token" ||
         error.name === "TokenExpiredError"
       ) {
+        logger.warn("⏰ Token expired or invalid", {
+          tokenPreview: token ? `${token.substring(0, 10)}...` : "no token",
+          path: req.path,
+        });
         return res.status(401).json({
           message: "Access token expired or invalid",
           code: "TOKEN_EXPIRED",
@@ -49,6 +83,10 @@ export const protect = async (req, res, next) => {
   }
 
   if (!token) {
+    logger.warn("⚠️ No authorization token provided", {
+      path: req.path,
+      ip: req.ip,
+    });
     return res
       .status(401)
       .json({ message: "Not authorized, no token provided" });
@@ -58,15 +96,37 @@ export const protect = async (req, res, next) => {
 // Middleware to check if user has specific role
 export const authorize = (...roles) => {
   return (req, res, next) => {
+    logger.info("🔐 Authorization check initiated", {
+      requiredRoles: roles,
+      userRole: req.user?.role,
+      userId: req.user?._id,
+      path: req.path,
+    });
+
     if (!req.user) {
+      logger.warn("❌ Authorization failed - no user in request", {
+        path: req.path,
+      });
       return res.status(401).json({ message: "Authentication required" });
     }
 
     if (!roles.includes(req.user.role)) {
+      logger.warn("❌ Authorization failed - insufficient role", {
+        userRole: req.user.role,
+        requiredRoles: roles,
+        userId: req.user._id,
+        path: req.path,
+      });
       return res.status(403).json({
         message: `Access denied. Required role: ${roles.join(" or ")}`,
       });
     }
+
+    logger.info("✅ Authorization successful", {
+      userRole: req.user.role,
+      userId: req.user._id,
+      path: req.path,
+    });
 
     next();
   };
