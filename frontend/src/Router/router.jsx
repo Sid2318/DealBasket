@@ -9,6 +9,8 @@ import {
 import HomePage from "../pages/Home/HomePage";
 import LoginPage from "../pages/Auth/Login/LoginPage";
 import SignUpPage from "../pages/Auth/SignUp/SignUpPage";
+import ForgotPasswordPage from "../pages/Auth/ForgotPassword/ForgotPasswordPage";
+import ResetPasswordPage from "../pages/Auth/ResetPassword/ResetPasswordPage";
 import History from "../pages/History/History";
 import SubcategoryPage from "../pages/Subcategory/SubcategoryPage";
 import ShopDetailsPage from "../pages/Seller/ShopDetails/ShopDetailsPage";
@@ -24,6 +26,8 @@ const AppRouter = () => (
         <Route index element={<HomePage />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="signup" element={<SignUpPage />} />
+        <Route path="forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="reset-password" element={<ResetPasswordPage />} />
         <Route path="subcategory/:subcategory" element={<SubcategoryPage />} />
         <Route path="history" element={<History />} />
 

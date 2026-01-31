@@ -264,6 +264,64 @@ export const verifyAccessToken = (token) => {
   }
 };
 
+// Generate password reset token and send email
+export const sendPasswordResetToken = async (email) => {
+  logger.info("🔒 Password reset requested", { email });
+
+  // Find user by email
+  const user = await User.findOne({ email });
+  if (!user) {
+    logger.warn("❌ Password reset failed - user not found", { email });
+    throw new Error("User not found");
+  }
+
+  // Generate reset token (6-digit OTP)
+  const resetToken = crypto.randomInt(100000, 999999).toString();
+
+  logger.info("🔑 Password reset token generated", { email, userId: user._id });
+
+  return {
+    resetToken,
+    userId: user._id,
+    email: user.email,
+    name: user.name,
+  };
+};
+
+// Reset password with token
+export const resetPassword = async (email, newPassword) => {
+  logger.info("🔄 Password reset attempt", { email });
+
+  // Find user by email
+  const user = await User.findOne({ email });
+  if (!user) {
+    logger.warn("❌ Password reset failed - user not found", { email });
+    throw new Error("User not found");
+  }
+
+  // Hash new password
+  const hashedPassword = await bcrypt.hash(newPassword, 12);
+
+  // Update user password
+  user.password = hashedPassword;
+
+  // Clear all refresh tokens to force re-login on all devices
+  user.refreshTokens = [];
+
+  await user.save();
+
+  logger.info("✅ Password reset successful", { email, userId: user._id });
+
+  return {
+    message: "Password reset successful. Please login with your new password.",
+    user: {
+      id: user._id,
+      email: user.email,
+      name: user.name,
+    },
+  };
+};
+
 /* 
 === AUTH SERVICE FUNCTIONS OVERVIEW ===
 
@@ -319,4 +377,17 @@ export const verifyAccessToken = (token) => {
    - Verifies JWT access token signature
    - Uses JWT_ACCESS_SECRET for verification
    - Returns decoded token payload or throws error
+
+10. sendPasswordResetToken(email)
+    - Generates password reset token for user
+    - Validates user exists
+    - Returns reset token and user info
+    - Used in forgot password flow
+
+11. resetPassword(email, newPassword)
+    - Resets user password with new password
+    - Hashes new password with bcrypt
+    - Clears all refresh tokens to force re-login
+    - Updates user record in database
+    - Returns success message
 */

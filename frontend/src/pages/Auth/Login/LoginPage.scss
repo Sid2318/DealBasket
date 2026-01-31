@@ -138,6 +138,24 @@
           opacity: 0.6;
         }
       }
+
+      .forgot-password {
+        text-align: center;
+        margin-top: 1rem;
+
+        .link {
+          color: $primary;
+          font-weight: 500;
+          font-size: 0.9rem;
+          cursor: pointer;
+          transition: color 0.2s;
+
+          &:hover {
+            color: $primary-dark;
+            text-decoration: underline;
+          }
+        }
+      }
     }
 
     .switch-page {

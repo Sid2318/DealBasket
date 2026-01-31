@@ -40,6 +40,40 @@ export const signupUser = async (userData) => {
 };
 
 // --------------------
+// FORGOT PASSWORD API
+// --------------------
+export const forgotPassword = async (email) => {
+  const response = await axios.post(`${API_URL}/forgot-password`, { email });
+  return response.data;
+};
+
+// --------------------
+// RESET PASSWORD API
+// --------------------
+export const resetPassword = async (
+  email,
+  resetToken,
+  password,
+  confirmPassword,
+) => {
+  const response = await axios.post(`${API_URL}/reset-password`, {
+    email,
+    resetToken,
+    password,
+    confirmPassword,
+  });
+  return response.data;
+};
+
+// --------------------
+// RESEND RESET TOKEN API
+// --------------------
+export const resendResetToken = async (email) => {
+  const response = await axios.post(`${API_URL}/resend-reset-token`, { email });
+  return response.data;
+};
+
+// --------------------
 // LOGIN API
 // --------------------
 export const loginUser = async (userData) => {

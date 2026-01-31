@@ -9,7 +9,10 @@ import {
   logout,
   logoutAll,
   getMe,
-} from "../controllers/authController.js";
+  forgotPassword,
+  resetPasswordHandler,
+  resendPasswordResetHandler,
+} from "../controllers/authController/index.js";
 import { protect } from "../middlewares/authMiddleware.js";
 import authLimiter from "../middlewares/authLimiter.js";
 
@@ -27,6 +30,11 @@ router.post("/signup", authLimiter, signup);
 router.post("/login", authLimiter, login);
 router.post("/refresh", refreshToken); // No rate limiting for token refresh
 
+// Password Reset
+router.post("/forgot-password", authLimiter, forgotPassword);
+router.post("/reset-password", authLimiter, resetPasswordHandler);
+router.post("/resend-reset-token", authLimiter, resendPasswordResetHandler);
+
 // Protected routes (require authentication)
 router.post("/logout", logout); // Can logout without valid token
 router.post("/logout-all", logoutAll);
@@ -41,6 +49,9 @@ export default router;
 // POST /auth/signup - Legacy route (redirects to send-otp)
 // POST /auth/login - Login user (sets HTTP-only cookie)
 // POST /auth/refresh - Refresh access token using cookie
+// POST /auth/forgot-password - Send password reset token via email
+// POST /auth/reset-password - Reset password with token
+// POST /auth/resend-reset-token - Resend password reset token
 // POST /auth/logout - Logout user (clears cookie)
 // POST /auth/logout-all - Logout from all devices
 // GET /auth/me - Get current user info (protected)

@@ -96,6 +96,12 @@ const LoginPage = () => {
           <button type="submit" className="submit-btn" disabled={loading}>
             {loading ? "Logging in..." : "Login"}
           </button>
+
+          <div className="forgot-password">
+            <span onClick={() => navigate("/forgot-password")} className="link">
+              Forgot Password?
+            </span>
+          </div>
         </form>
 
         <div className="switch-page">

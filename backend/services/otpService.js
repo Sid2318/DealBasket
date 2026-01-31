@@ -6,6 +6,10 @@ import logger from "../utils/logger.js";
 // Key: email, Value: { userData, otp, expiresAt }
 const pendingRegistrations = new Map();
 
+// In-memory store for password reset tokens
+// Key: email, Value: { resetToken, expiresAt, userId }
+const passwordResetTokens = new Map();
+
 // OTP expiration time (5 minutes)
 const OTP_EXPIRY_MS = 5 * 60 * 1000;
 
@@ -13,10 +17,20 @@ const OTP_EXPIRY_MS = 5 * 60 * 1000;
 setInterval(
   () => {
     const now = Date.now();
+
+    // Clean up expired pending registrations
     for (const [email, data] of pendingRegistrations.entries()) {
       if (now > data.expiresAt) {
         pendingRegistrations.delete(email);
         logger.debug("🧹 Cleaned up expired pending registration", { email });
+      }
+    }
+
+    // Clean up expired password reset tokens
+    for (const [email, data] of passwordResetTokens.entries()) {
+      if (now > data.expiresAt) {
+        passwordResetTokens.delete(email);
+        logger.debug("🧹 Cleaned up expired password reset token", { email });
       }
     }
   },
@@ -148,4 +162,120 @@ export const resendOTP = async (email) => {
 
   logger.info("🔄 OTP resent", { email });
   return { message: "OTP resent successfully" };
+};
+
+// Send password reset email
+export const sendPasswordResetEmail = async (email, resetToken) => {
+  const transporter = createTransporter();
+
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject: "DealBasket - Password Reset",
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #333;">Password Reset Request</h2>
+        <p>You requested to reset your password for your DealBasket account.</p>
+        <p>Your password reset code is:</p>
+        <div style="background-color: #f4f4f4; padding: 20px; text-align: center; margin: 20px 0;">
+          <h1 style="color: #007bff; letter-spacing: 5px; margin: 0;">${resetToken}</h1>
+        </div>
+        <p>This code will expire in 5 minutes.</p>
+        <p>If you didn't request this password reset, please ignore this email.</p>
+        <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+        <p style="color: #666; font-size: 12px;">This is an automated message from DealBasket.</p>
+      </div>
+    `,
+  };
+
+  await transporter.sendMail(mailOptions);
+  logger.info("📧 Password reset email sent successfully", { email });
+};
+
+// Store password reset token
+export const storePasswordResetToken = async (email, resetToken, userId) => {
+  const expiresAt = Date.now() + OTP_EXPIRY_MS;
+
+  // Store in memory
+  passwordResetTokens.set(email, {
+    resetToken,
+    expiresAt,
+    userId,
+  });
+
+  logger.info("🔑 Password reset token stored", { email, userId });
+
+  // Send reset email
+  await sendPasswordResetEmail(email, resetToken);
+
+  return { message: "Password reset code sent to your email" };
+};
+
+// Verify password reset token
+export const verifyPasswordResetToken = (email, resetToken) => {
+  const resetData = passwordResetTokens.get(email);
+
+  if (!resetData) {
+    logger.warn("❌ No password reset request found", { email });
+    throw new Error(
+      "No password reset request found. Please request a new reset.",
+    );
+  }
+
+  if (Date.now() > resetData.expiresAt) {
+    passwordResetTokens.delete(email);
+    logger.warn("❌ Password reset token expired", { email });
+    throw new Error("Reset token has expired. Please request a new reset.");
+  }
+
+  if (resetData.resetToken !== resetToken) {
+    logger.warn("❌ Invalid password reset token", { email });
+    throw new Error("Invalid reset token. Please try again.");
+  }
+
+  // Token verified - clean up and return success
+  passwordResetTokens.delete(email);
+  logger.info("✅ Password reset token verified successfully", { email });
+
+  return {
+    success: true,
+    userId: resetData.userId,
+    email: email,
+  };
+};
+
+// Check if there's a pending password reset
+export const hasPendingPasswordReset = (email) => {
+  const resetData = passwordResetTokens.get(email);
+  if (!resetData) return false;
+
+  // Check if expired
+  if (Date.now() > resetData.expiresAt) {
+    passwordResetTokens.delete(email);
+    return false;
+  }
+
+  return true;
+};
+
+// Resend password reset token
+export const resendPasswordResetToken = async (email) => {
+  const resetData = passwordResetTokens.get(email);
+
+  if (!resetData) {
+    throw new Error(
+      "No password reset request found. Please request a new reset.",
+    );
+  }
+
+  // Generate new token and update expiry
+  const newResetToken = generateOTP();
+  resetData.resetToken = newResetToken;
+  resetData.expiresAt = Date.now() + OTP_EXPIRY_MS;
+
+  // Send new reset email
+  await sendPasswordResetEmail(email, newResetToken);
+
+  logger.info("🔄 Password reset token resent", { email });
+  return { message: "Password reset code resent successfully" };
 };
