@@ -20,6 +20,10 @@ const userSchema = new mongoose.Schema(
       enum: ["user", "seller"],
       default: "user",
     },
+    isVerified: {
+      type: Boolean,
+      default: true,
+    },
     refreshTokens: [
       {
         token: {

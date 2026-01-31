@@ -23,6 +23,68 @@ const generateSecureToken = () => {
   return crypto.randomBytes(64).toString("hex");
 };
 
+// Check if user exists (used before sending OTP)
+export const checkUserExists = async (email) => {
+  const existingUser = await User.findOne({ email });
+  return !!existingUser;
+};
+
+// Create verified user after OTP verification
+export const createVerifiedUser = async (userData) => {
+  const { name, email, password } = userData;
+
+  logger.info("🔐 Creating verified user account", { email, name });
+
+  // Double check user doesn't exist
+  const existingUser = await User.findOne({ email });
+  if (existingUser) {
+    logger.warn("⚠️ User registration failed - user already exists", { email });
+    throw new Error("User already exists");
+  }
+
+  // Hash password
+  const hashedPassword = await bcrypt.hash(password, 12);
+
+  // Create user with isVerified = true
+  const user = await User.create({
+    name,
+    email,
+    password: hashedPassword,
+    isVerified: true,
+  });
+
+  logger.info("💾 Verified user created, generating tokens", {
+    email,
+    userId: user._id,
+  });
+
+  // Generate tokens
+  const accessToken = generateAccessToken(user._id);
+  const refreshToken = generateRefreshToken(user._id);
+
+  // Store refresh token
+  await user.addRefreshToken(refreshToken);
+
+  logger.info("🎉 User registration completed successfully", {
+    email,
+    name,
+    userId: user._id,
+  });
+
+  return {
+    message: "Registration successful",
+    accessToken,
+    refreshToken,
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    },
+  };
+};
+
+// Legacy signupUser - kept for reference but not used in OTP flow
 export const signupUser = async (userData) => {
   const { name, email, password } = userData;
 

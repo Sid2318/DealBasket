@@ -4,7 +4,35 @@ import axios from "./axios.js";
 const API_URL = "/auth";
 
 // --------------------
-// SIGNUP API
+// SEND OTP API (Step 1 of Registration)
+// --------------------
+export const sendOtp = async (userData) => {
+  const response = await axios.post(`${API_URL}/send-otp`, userData);
+  return response.data;
+};
+
+// --------------------
+// VERIFY OTP API (Step 2 of Registration)
+// --------------------
+export const verifyOtp = async (email, otp) => {
+  const response = await axios.post(
+    `${API_URL}/verify-otp`,
+    { email, otp },
+    { withCredentials: true },
+  );
+  return response.data;
+};
+
+// --------------------
+// RESEND OTP API
+// --------------------
+export const resendOtp = async (email) => {
+  const response = await axios.post(`${API_URL}/resend-otp`, { email });
+  return response.data;
+};
+
+// --------------------
+// LEGACY SIGNUP API (redirects to OTP flow)
 // --------------------
 export const signupUser = async (userData) => {
   const response = await axios.post(`${API_URL}/signup`, userData);
