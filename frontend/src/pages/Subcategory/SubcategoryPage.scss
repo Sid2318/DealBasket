@@ -2,8 +2,8 @@
 
 .subcategory-page {
   min-height: 100vh;
-  padding: 100px 2rem 2rem;
-  background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+  padding: 110px 2.5rem 3rem;
+  background: linear-gradient(160deg, #f7f8fb 0%, #eef1f6 60%, #fdfcff 100%);
 
   .loading,
   .error {
@@ -14,7 +14,7 @@
   }
 
   .error {
-    color: #e74c3c;
+    color: $error;
   }
 
   .header {
@@ -22,25 +22,27 @@
     margin: 0 auto 2rem;
 
     .back-btn {
-      padding: 0.5rem 1.5rem;
+      padding: 0.6rem 1.4rem;
       background: $white;
-      color: $primary;
-      border: 2px solid $primary;
-      border-radius: 50px;
-      font-size: 1rem;
+      color: $primary-dark;
+      border: 1px solid rgba(108, 99, 255, 0.2);
+      border-radius: var(--radius-pill);
+      font-size: 0.95rem;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s;
       margin-bottom: 1.5rem;
+      box-shadow: var(--shadow-xs);
 
       &:hover {
-        background: $primary;
-        color: $white;
+        background: rgba(108, 99, 255, 0.12);
+        color: $primary-dark;
+        transform: translateY(-2px);
       }
     }
 
     h1 {
-      font-size: 2.5rem;
+      font-size: 2.4rem;
       color: $primary-dark;
       margin-bottom: 0.5rem;
       text-transform: capitalize;
@@ -56,9 +58,10 @@
     max-width: 1200px;
     margin: 0 auto 2rem;
     background: $white;
-    padding: 1.5rem;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    padding: 1.6rem;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(108, 99, 255, 0.08);
     display: flex;
     gap: 2rem;
     align-items: center;
@@ -80,7 +83,13 @@
         width: 100%;
         height: 6px;
         border-radius: 5px;
-        background: linear-gradient(to right, $primary 0%, $primary 50%, #ddd 50%, #ddd 100%);
+        background: linear-gradient(
+          to right,
+          $primary 0%,
+          $primary 50%,
+          rgba(108, 99, 255, 0.2) 50%,
+          rgba(108, 99, 255, 0.2) 100%
+        );
         outline: none;
         cursor: pointer;
 
@@ -110,8 +119,8 @@
         width: 100%;
         padding: 0.75rem;
         font-size: 1rem;
-        border: 2px solid $border;
-        border-radius: 8px;
+        border: 1px solid $border;
+        border-radius: var(--radius-sm);
         background: $white;
         color: $text-main;
         cursor: pointer;
@@ -131,25 +140,30 @@
     gap: 2rem;
     max-width: 1200px;
     margin: 0 auto;
+    align-items: stretch;
 
     .product-card {
       background: $white;
-      border-radius: 16px;
+      border-radius: var(--radius-md);
       overflow: hidden;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        cursor: pointer;
-        border: 1px solid transparent;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      border: 1px solid rgba(108, 99, 255, 0.08);
+      display: flex;
+      flex-direction: column;
 
-        &:hover {
-          transform: scale(1.05);
-        }
-      
+      &:hover {
+        transform: translateY(-6px);
+        box-shadow: var(--shadow-md);
+        border-color: rgba(108, 99, 255, 0.2);
+      }
+
       .product-image {
         position: relative;
         width: 100%;
         height: 280px;
-        background: #f8f9fa;
+        background: linear-gradient(135deg, $primary-light 0%, $accent-light 100%);
         overflow: hidden;
 
         img {
@@ -163,7 +177,7 @@
           position: absolute;
           top: 12px;
           right: 12px;
-          background: #e74c3c;
+          background: linear-gradient(135deg, $error 0%, #e74c3c 100%);
           color: white;
           padding: 0.4rem 0.8rem;
           border-radius: 8px;
@@ -174,6 +188,9 @@
 
       .product-info {
         padding: 1.25rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
 
         h3 {
           font-size: 1rem;
@@ -187,7 +204,7 @@
         }
 
         .product-source {
-          margin-bottom: 0.75rem;
+          margin-bottom: 0.2rem;
           display: flex;
           align-items: center;
           gap: 0.5rem;
@@ -201,8 +218,8 @@
 
           .website {
             display: inline-block;
-            background: $background;
-            color: $primary;
+            background: rgba(108, 99, 255, 0.08);
+            color: $primary-dark;
             padding: 0.3rem 0.8rem;
             border-radius: 6px;
             font-size: 0.85rem;
@@ -215,7 +232,7 @@
           display: flex;
           align-items: center;
           gap: 0.75rem;
-          margin-bottom: 0.75rem;
+          margin-bottom: 0.2rem;
 
           .discounted-price {
             font-size: 1.5rem;
@@ -237,7 +254,7 @@
           font-size: 0.9rem;
 
           .rating {
-            background: #27ae60;
+            background: linear-gradient(135deg, $success 0%, #2ecc71 100%);
             color: white;
             padding: 0.2rem 0.6rem;
             border-radius: 6px;
@@ -255,17 +272,17 @@
           background: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
           color: $white;
           border: none;
-          border-radius: 8px;
+          border-radius: var(--radius-sm);
           font-size: 1rem;
           font-weight: 700;
           cursor: pointer;
           transition: all 0.3s;
-          margin-top: 0.75rem;
-          box-shadow: 0 2px 8px rgba(108, 99, 255, 0.3);
+          margin-top: auto;
+          box-shadow: 0 10px 20px rgba(108, 99, 255, 0.22);
 
           &:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(108, 99, 255, 0.5);
+            box-shadow: 0 14px 26px rgba(108, 99, 255, 0.3);
           }
 
           &:active {
@@ -279,7 +296,7 @@
 
 @media (max-width: 768px) {
   .subcategory-page {
-    padding: 80px 1rem 1rem;
+    padding: 90px 1rem 1.5rem;
 
     .header {
       h1 {

@@ -5,14 +5,27 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, $primary-light 0%, $accent-light 100%);
+  background: linear-gradient(145deg, $primary-light 0%, $accent-light 55%, $background 100%);
   padding: 2rem;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    width: 320px;
+    height: 320px;
+    bottom: -140px;
+    left: -100px;
+    background: radial-gradient(circle, rgba(108, 99, 255, 0.2), transparent 70%);
+  }
 
   .signup-card {
     background: $white;
     padding: 2.5rem;
-    border-radius: 12px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    border: 1px solid rgba(108, 99, 255, 0.12);
     width: 100%;
     max-width: 450px;
     animation: slideUp 0.4s ease-out;
@@ -20,7 +33,7 @@
     h2 {
       color: $primary-dark;
       margin-bottom: 0.5rem;
-      font-size: 1.8rem;
+      font-size: 2rem;
       text-align: center;
     }
 
@@ -71,15 +84,17 @@
 
         input {
           padding: 0.85rem 1rem;
-          border: 2px solid $border;
-          border-radius: 8px;
+          border: 1px solid $border;
+          border-radius: var(--radius-sm);
           font-size: 1rem;
           transition: all 0.3s ease;
+          background: rgba(248, 249, 252, 0.9);
 
           &:focus {
             outline: none;
             border-color: $primary;
-            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1);
+            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.14);
+            background: $white;
           }
 
           &:disabled {
@@ -124,19 +139,19 @@
       .submit-btn {
         margin-top: 0.5rem;
         padding: 0.9rem 1rem;
-        background: $primary;
+        background: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
         color: $white;
         border: none;
-        border-radius: 8px;
+        border-radius: var(--radius-sm);
         font-size: 1rem;
         font-weight: 600;
         cursor: pointer;
         transition: all 0.3s ease;
 
         &:hover:not(:disabled) {
-          background: $button-hover;
+          background: linear-gradient(135deg, $primary-dark 0%, $primary 100%);
           transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(108, 99, 255, 0.3);
+          box-shadow: 0 12px 22px rgba(108, 99, 255, 0.26);
         }
 
         &:active:not(:disabled) {
@@ -167,8 +182,8 @@
         .back-btn {
           flex: 1;
           padding: 0.7rem 1rem;
-          border: 2px solid $primary;
-          border-radius: 8px;
+          border: 1px solid rgba(108, 99, 255, 0.4);
+          border-radius: var(--radius-sm);
           font-size: 0.9rem;
           font-weight: 500;
           cursor: pointer;
@@ -177,7 +192,7 @@
           color: $primary;
 
           &:hover:not(:disabled) {
-            background: $primary-light;
+            background: rgba(108, 99, 255, 0.12);
           }
 
           &:disabled {

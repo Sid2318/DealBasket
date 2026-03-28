@@ -1,15 +1,16 @@
+@use "../../styles/colors.scss" as *;
+
 .error-message-ui {
-  color: #fff;
-  background: #e74c3c;
-  border-radius: 6px;
-  padding: 8px 14px;
+  color: $white;
+  background: linear-gradient(135deg, $error 0%, #e74c3c 100%);
+  border-radius: var(--radius-sm);
+  padding: 0.55rem 0.9rem;
   margin: 6px 0 0 0;
-  font-size: 0.97rem;
-  font-weight: 500;
-  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.08);
-  border: 1px solid #e74c3c;
+  font-size: 0.95rem;
+  font-weight: 600;
+  box-shadow: 0 8px 18px rgba(255, 82, 82, 0.18);
+  border: 1px solid rgba(255, 82, 82, 0.5);
   letter-spacing: 0.01em;
-  transition: background 0.2s;
   animation: shake 0.2s 1;
 }
 

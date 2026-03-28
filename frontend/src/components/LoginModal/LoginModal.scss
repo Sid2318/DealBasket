@@ -6,8 +6,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -25,13 +25,14 @@
 }
 
 .login-modal {
-  background: $white;
-  border-radius: 24px;
+  background: linear-gradient(180deg, $white 0%, $background 100%);
+  border-radius: var(--radius-lg);
   padding: 3rem 2.5rem;
   max-width: 500px;
   width: 90%;
   position: relative;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid rgba(108, 99, 255, 0.12);
   animation: slideUp 0.3s ease-out;
   text-align: center;
 
@@ -64,8 +65,8 @@
     transition: all 0.3s;
 
     &:hover {
-      background: $background;
-      color: $text-main;
+      background: rgba(108, 99, 255, 0.12);
+      color: $primary-dark;
       transform: rotate(90deg);
     }
   }
@@ -89,11 +90,12 @@
   }
 
   .modal-features {
-    background: $background;
-    border-radius: 12px;
+    background: rgba(108, 99, 255, 0.06);
+    border-radius: var(--radius-md);
     padding: 1.5rem;
     margin-bottom: 2rem;
     text-align: left;
+    border: 1px solid rgba(108, 99, 255, 0.08);
 
     .feature {
       padding: 0.75rem 0;
@@ -126,7 +128,7 @@
       &.login-btn {
         background: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
         color: $white;
-        box-shadow: 0 4px 12px rgba(108, 99, 255, 0.3);
+        box-shadow: 0 10px 20px rgba(108, 99, 255, 0.24);
 
         &:hover {
           transform: translateY(-2px);
@@ -135,9 +137,9 @@
       }
 
       &.signup-btn {
-        background: $white;
+        background: rgba(255, 255, 255, 0.9);
         color: $primary;
-        border: 2px solid $primary;
+        border: 1px solid rgba(108, 99, 255, 0.4);
 
         &:hover {
           background: $primary;
