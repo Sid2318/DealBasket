@@ -260,7 +260,14 @@ const ResetPasswordPage = () => {
               formData.resetToken.length !== 6
             }
           >
-            {loading ? "Resetting..." : "Reset Password"}
+            {loading ? (
+              <span className="btn-loader">
+                <span className="btn-spinner" aria-hidden="true"></span>
+                Resetting...
+              </span>
+            ) : (
+              "Reset Password"
+            )}
           </button>
 
           <div className="resend-section">

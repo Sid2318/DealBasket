@@ -238,7 +238,14 @@ const ShopDetailsPage = () => {
         </div>
 
         <button type="submit" className="submit-btn" disabled={loading}>
-          {loading ? "Registering..." : "Register as Seller"}
+          {loading ? (
+            <span className="btn-loader">
+              <span className="btn-spinner" aria-hidden="true"></span>
+              Registering...
+            </span>
+          ) : (
+            "Register as Seller"
+          )}
         </button>
       </form>
     </div>

@@ -140,7 +140,14 @@ const OtpVerification = ({ formData, onBackToForm }) => {
             className="submit-btn"
             disabled={loading || success || otp.length !== 6}
           >
-            {loading ? "Verifying..." : "Verify & Create Account"}
+            {loading ? (
+              <span className="btn-loader">
+                <span className="btn-spinner" aria-hidden="true"></span>
+                Verifying...
+              </span>
+            ) : (
+              "Verify & Create Account"
+            )}
           </button>
 
           <div className="otp-actions">

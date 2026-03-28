@@ -86,3 +86,30 @@ img {
 ::selection {
   background: rgba(108, 99, 255, 0.18);
 }
+
+.btn-loader {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-spinner {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: $white;
+  animation: btnSpin 0.8s linear infinite;
+}
+
+.btn-spinner--dark {
+  border: 2px solid rgba(108, 99, 255, 0.25);
+  border-top-color: $primary-dark;
+}
+
+@keyframes btnSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}

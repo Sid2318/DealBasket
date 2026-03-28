@@ -125,7 +125,14 @@ const ForgotPasswordPage = () => {
             </div>
 
             <button type="submit" className="submit-btn" disabled={loading}>
-              {loading ? "Sending..." : "Send Reset Code"}
+              {loading ? (
+                <span className="btn-loader">
+                  <span className="btn-spinner" aria-hidden="true"></span>
+                  Sending...
+                </span>
+              ) : (
+                "Send Reset Code"
+              )}
             </button>
           </form>
         ) : (

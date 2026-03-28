@@ -150,7 +150,14 @@ const SignUpForm = ({ onOtpSent }) => {
           </div>
 
           <button type="submit" className="submit-btn" disabled={loading}>
-            {loading ? "Sending OTP..." : "Send OTP"}
+            {loading ? (
+              <span className="btn-loader">
+                <span className="btn-spinner" aria-hidden="true"></span>
+                Sending OTP...
+              </span>
+            ) : (
+              "Send OTP"
+            )}
           </button>
         </form>
 

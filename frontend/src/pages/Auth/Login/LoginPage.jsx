@@ -94,7 +94,14 @@ const LoginPage = () => {
           </div>
 
           <button type="submit" className="submit-btn" disabled={loading}>
-            {loading ? "Logging in..." : "Login"}
+            {loading ? (
+              <span className="btn-loader">
+                <span className="btn-spinner" aria-hidden="true"></span>
+                Logging in...
+              </span>
+            ) : (
+              "Login"
+            )}
           </button>
 
           <div className="forgot-password">
