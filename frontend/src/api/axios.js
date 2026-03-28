@@ -1,7 +1,8 @@
 import axios from "axios";
 
+const apiBaseUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
 const api = axios.create({
-  baseURL: "http://localhost:3000",
+  baseURL: apiBaseUrl,
   withCredentials: true, // Important: Include cookies for refresh tokens
 });
 
@@ -70,7 +71,7 @@ api.interceptors.response.use(
       try {
         // Attempt to refresh the token
         const response = await axios.post(
-          "http://localhost:3000/auth/refresh",
+          `${apiBaseUrl}/auth/refresh`,
           {},
           {
             withCredentials: true,

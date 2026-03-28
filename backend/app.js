@@ -20,11 +20,28 @@ dotenv.config();
 const app = express();
 
 // CORS configuration for secure cookie handling
+const isDev = process.env.NODE_ENV !== "production";
 const corsOptions = {
-  origin: process.env.FRONTEND_URL || "http://localhost:5173",
+  origin: (origin, callback) => {
+    if (!origin) {
+      return callback(null, true);
+    }
+
+    const isLocalhost = /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin);
+
+    if (isDev && isLocalhost) {
+      return callback(null, true);
+    }
+
+    if (process.env.FRONTEND_URL && origin === process.env.FRONTEND_URL) {
+      return callback(null, true);
+    }
+
+    return callback(new Error(`CORS blocked: ${origin}`));
+  },
   credentials: true, // Allow cookies
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  allowedHeaders: ["Content-Type", "Authorization", "Idempotency-Key"],
   exposedHeaders: ["set-cookie"],
 };
 

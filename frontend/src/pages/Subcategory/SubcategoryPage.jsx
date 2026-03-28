@@ -115,6 +115,14 @@ const SubcategoryPage = () => {
     setPriceRange([0, value]);
   };
 
+  const createIdempotencyKey = () => {
+    const cryptoRef = globalThis.crypto;
+    if (cryptoRef && typeof cryptoRef.randomUUID === "function") {
+      return cryptoRef.randomUUID();
+    }
+    return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  };
+
   const handleBuyNow = async (e, product) => {
     e.stopPropagation(); // Prevent navigation to product details
 
@@ -142,7 +150,8 @@ const SubcategoryPage = () => {
         discount: product.discount,
       };
 
-      await savePurchase(purchaseData);
+      const idempotencyKey = createIdempotencyKey();
+      await savePurchase(purchaseData, idempotencyKey);
 
       alert(
         `✅ Purchase saved! You saved ₹${savedAmount.toLocaleString("en-IN")}!`,

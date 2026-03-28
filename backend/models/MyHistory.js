@@ -7,6 +7,9 @@ const myHistorySchema = new mongoose.Schema(
       required: true,
       default: "guest",
     },
+    idempotencyKey: {
+      type: String,
+    },
     productId: {
       type: String,
       required: true,
@@ -48,7 +51,15 @@ const myHistorySchema = new mongoose.Schema(
       default: Date.now,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
+);
+
+myHistorySchema.index(
+  { userId: 1, idempotencyKey: 1 },
+  {
+    unique: true,
+    partialFilterExpression: { idempotencyKey: { $type: "string" } },
+  },
 );
 
 export default mongoose.model("MyHistory", myHistorySchema);

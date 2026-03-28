@@ -13,6 +13,8 @@ export const savePurchase = async (req, res) => {
   });
 
   try {
+    const idempotencyKey = req.get("Idempotency-Key") || null;
+
     // Require authentication for purchase
     if (!req.user || !req.user._id) {
       logger.warn("❌ Purchase save failed - user not authenticated", {
@@ -34,7 +36,11 @@ export const savePurchase = async (req, res) => {
       },
     });
 
-    const result = await savePurchaseService(req.user._id, req.body);
+    const result = await savePurchaseService(
+      req.user._id,
+      req.body,
+      idempotencyKey,
+    );
 
     logger.info("🎉 Purchase saved successfully", {
       userId: req.user._id,
@@ -42,9 +48,10 @@ export const savePurchase = async (req, res) => {
       productName: req.body.productName,
       finalPrice: req.body.finalPrice,
       savingsAmount: req.body.savingsAmount,
+      idempotent: result.idempotent || false,
     });
 
-    res.status(201).json(result);
+    res.status(result.idempotent ? 200 : 201).json(result);
   } catch (error) {
     if (error.message === "Missing required fields") {
       return res.status(400).json({

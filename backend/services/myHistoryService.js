@@ -1,6 +1,10 @@
 import MyHistory from "../models/MyHistory.js";
 
-export const savePurchaseService = async (userId, purchaseData) => {
+export const savePurchaseService = async (
+  userId,
+  purchaseData,
+  idempotencyKey = null,
+) => {
   const {
     productId,
     productName,
@@ -25,19 +29,46 @@ export const savePurchaseService = async (userId, purchaseData) => {
     throw new Error("Missing required fields");
   }
 
-  const purchase = await MyHistory.create({
-    userId,
-    productId,
-    productName,
-    productImage,
-    website,
-    category,
-    subcategory,
-    originalPrice,
-    finalPrice,
-    savedAmount,
-    discount,
-  });
+  if (idempotencyKey) {
+    const existing = await MyHistory.findOne({ userId, idempotencyKey });
+    if (existing) {
+      return {
+        message: "Purchase already saved",
+        purchase: existing,
+        idempotent: true,
+      };
+    }
+  }
+
+  let purchase;
+  try {
+    purchase = await MyHistory.create({
+      userId,
+      idempotencyKey,
+      productId,
+      productName,
+      productImage,
+      website,
+      category,
+      subcategory,
+      originalPrice,
+      finalPrice,
+      savedAmount,
+      discount,
+    });
+  } catch (error) {
+    if (error?.code === 11000 && idempotencyKey) {
+      const existing = await MyHistory.findOne({ userId, idempotencyKey });
+      if (existing) {
+        return {
+          message: "Purchase already saved",
+          purchase: existing,
+          idempotent: true,
+        };
+      }
+    }
+    throw error;
+  }
 
   return {
     message: "Purchase saved successfully",
