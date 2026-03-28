@@ -1,8 +1,14 @@
 // aggregator.js
 // Aggregates outputs from all scrapers and writes to a single JSON file
 
-import { exec } from "child_process";
+import { execFile } from "child_process";
 import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const NODE_PATH = process.execPath;
 
 // List of scraper scripts to run (relative to workspace root)
 const scrapers = [
@@ -20,9 +26,11 @@ const scrapers = [
 
 async function runScraper(script) {
   return new Promise((resolve, reject) => {
-    exec(
-      `node ${script}`,
-      { maxBuffer: 1024 * 1024 * 10 },
+    const fullPath = path.join(__dirname, script);
+    execFile(
+      NODE_PATH,
+      [fullPath],
+      { maxBuffer: 1024 * 1024 * 10, cwd: __dirname },
       (error, stdout, stderr) => {
         if (error) {
           console.error(`Error running ${script}:`, error);
@@ -40,7 +48,7 @@ async function runScraper(script) {
         } catch (e) {
           resolve([]);
         }
-      }
+      },
     );
   });
 }
@@ -57,7 +65,7 @@ async function aggregate() {
   }
   fs.writeFileSync(
     "all_products_output.json",
-    JSON.stringify(allProducts, null, 2)
+    JSON.stringify(allProducts, null, 2),
   );
   console.log("Aggregated output written to all_products_output.json");
 }

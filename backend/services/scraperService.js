@@ -1,8 +1,15 @@
-import { exec } from "child_process";
-import { promisify } from "util";
+import { execFile } from "child_process";
+import fs from "fs/promises";
+import path from "path";
 import Product from "../models/Product.js";
 
-const execPromise = promisify(exec);
+const SCRAPER_INTERVAL_MS = 1000 * 60 * 60 * 24 * 2;
+const SCRAPER_STATE_FILE = path.join(
+  process.cwd(),
+  "logs",
+  "scraper-last-run.json",
+);
+const NODE_PATH = process.execPath;
 
 // List of scraper scripts to run (relative to scrappers directory)
 const scrapers = [
@@ -19,21 +26,25 @@ const scrapers = [
 
 async function runScraper(script, scrapperDir) {
   return new Promise((resolve) => {
-    const fullPath = `${scrapperDir}/${script}`;
+    const fullPath = path.resolve(scrapperDir, script);
     console.log(`Running scraper: ${script}...`);
 
-    exec(
-      `node ${fullPath}`,
+    execFile(
+      NODE_PATH,
+      [fullPath],
       { maxBuffer: 1024 * 1024 * 10, cwd: scrapperDir },
       (error, stdout, stderr) => {
         if (error) {
           console.error(`Error running ${script}:`, error.message);
           return resolve([]);
         }
+        if (stderr && stderr.trim()) {
+          console.warn(`⚠️  ${script} stderr:`, stderr.trim());
+        }
         try {
           // Find all JSON arrays in the output (handle multiple or mixed with console.log)
           const jsonMatches = stdout.match(
-            /\[[^\[\]]*?\{[\s\S]*?\}[^\[\]]*?\]/g
+            /\[[^\[\]]*?\{[\s\S]*?\}[^\[\]]*?\]/g,
           );
 
           if (jsonMatches && jsonMatches.length > 0) {
@@ -61,7 +72,7 @@ async function runScraper(script, scrapperDir) {
           console.error(`✗ ${script} JSON parse error:`, e.message);
           resolve([]);
         }
-      }
+      },
     );
   });
 }
@@ -70,7 +81,7 @@ export const runAggregateScraperAndStore = async () => {
   try {
     console.log("🔄 Starting aggregate scraper service...\n");
 
-    const scrapperDir = process.cwd() + "/scrappers";
+    const scrapperDir = path.join(process.cwd(), "scrappers");
     let allProducts = [];
 
     // Run all scrapers sequentially
@@ -104,7 +115,7 @@ export const runAggregateScraperAndStore = async () => {
     const invalidCount = allProducts.length - validProducts.length;
     if (invalidCount > 0) {
       console.log(
-        `⚠️  Filtered out ${invalidCount} invalid products (missing required fields)`
+        `⚠️  Filtered out ${invalidCount} invalid products (missing required fields)`,
       );
     }
 
@@ -112,7 +123,7 @@ export const runAggregateScraperAndStore = async () => {
 
     if (validProducts.length === 0) {
       console.log(
-        "⚠️  No valid products were scraped. Skipping database update."
+        "⚠️  No valid products were scraped. Skipping database update.",
       );
       return { success: false, count: 0, message: "No valid products scraped" };
     }
@@ -124,7 +135,7 @@ export const runAggregateScraperAndStore = async () => {
     // Insert all products
     const result = await Product.insertMany(validProducts);
     console.log(
-      `✅ Successfully inserted ${result.length} products into MongoDB`
+      `✅ Successfully inserted ${result.length} products into MongoDB`,
     );
 
     // Log category and subcategory counts with website information
@@ -151,7 +162,7 @@ export const runAggregateScraperAndStore = async () => {
     console.log("\n--- Product Statistics by Website ---");
     categoryStats.forEach((stat) => {
       console.log(
-        `${stat._id.category} > ${stat._id.subcategory} [${stat._id.website}]: ${stat.count} products`
+        `${stat._id.category} > ${stat._id.subcategory} [${stat._id.website}]: ${stat.count} products`,
       );
     });
     console.log("-------------------------------------\n");
@@ -161,4 +172,57 @@ export const runAggregateScraperAndStore = async () => {
     console.error("❌ Error in aggregate scraper service:", error);
     throw error;
   }
+};
+
+const readLastRun = async () => {
+  try {
+    const raw = await fs.readFile(SCRAPER_STATE_FILE, "utf8");
+    const data = JSON.parse(raw);
+    return typeof data.lastRun === "number" ? data.lastRun : null;
+  } catch (error) {
+    return null;
+  }
+};
+
+const writeLastRun = async (timestamp) => {
+  const dir = path.dirname(SCRAPER_STATE_FILE);
+  await fs.mkdir(dir, { recursive: true });
+  await fs.writeFile(
+    SCRAPER_STATE_FILE,
+    JSON.stringify({ lastRun: timestamp }, null, 2),
+    "utf8",
+  );
+};
+
+const scheduleNextRun = async () => {
+  const lastRun = await readLastRun();
+  const now = Date.now();
+
+  let delay = SCRAPER_INTERVAL_MS;
+  if (lastRun) {
+    const nextRun = lastRun + SCRAPER_INTERVAL_MS;
+    delay = Math.max(nextRun - now, 0);
+  }
+
+  if (!lastRun) {
+    delay = SCRAPER_INTERVAL_MS;
+  }
+
+  const delayHours = Math.ceil(delay / (1000 * 60 * 60));
+  console.log(`⏳ Scraper scheduled to run in ~${delayHours} hour(s).`);
+
+  setTimeout(async () => {
+    try {
+      await runAggregateScraperAndStore();
+    } catch (error) {
+      console.error("❌ Scheduled scraper run failed:", error.message);
+    } finally {
+      await writeLastRun(Date.now());
+      scheduleNextRun();
+    }
+  }, delay);
+};
+
+export const scheduleAggregateScraper = async () => {
+  await scheduleNextRun();
 };

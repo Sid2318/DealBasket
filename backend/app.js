@@ -8,7 +8,7 @@ import productRoutes from "./routes/productRoutes.js";
 import myHistoryRoutes from "./routes/myHistoryRoutes.js";
 import sellerRoutes from "./routes/sellerRoutes.js";
 import connectDB from "./config/db.js";
-import { runAggregateScraperAndStore } from "./services/scraperService.js";
+import { scheduleAggregateScraper } from "./services/scraperService.js";
 import logger from "./utils/logger.js";
 import {
   setupPerformanceMiddleware,
@@ -136,13 +136,11 @@ const startServer = async () => {
       );
       logger.info("🎉 ================================");
 
-      // Run aggregate scraper in background after server starts
-      // logger.info("\n🔄 Starting background scraper...\n");
-      // runAggregateScraperAndStore()
-      //   .then(() =>
-      //     logger.info("✅ Background scraper completed successfully\n")
-      //   )
-      //   .catch((err) => logger.error("❌ Background scraper error:", { error: err.message }));
+      // Run aggregate scraper on a 2-day schedule after server starts
+      logger.info("\n⏳ Scheduling background scraper (every 2 days)...\n");
+      scheduleAggregateScraper().catch((err) =>
+        logger.error("❌ Scraper scheduler error:", { error: err.message }),
+      );
     });
   } catch (error) {
     logger.error("🚨 ================================");
