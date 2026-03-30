@@ -9,6 +9,13 @@ export const getAllProducts = async (category, subcategory) => {
   return response.data;
 };
 
+export const searchProducts = async (q, page = 1, limit = 12) => {
+  const response = await api.get("/products/search", {
+    params: { q, page, limit },
+  });
+  return response.data;
+};
+
 export const getProductsBySubcategory = async (subcategory) => {
   const response = await api.get(`/products/subcategory/${subcategory}`);
   return response.data;
