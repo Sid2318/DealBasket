@@ -6,6 +6,7 @@ import {
   getProductByIdService,
   createProductService,
   seedProductsService,
+  searchProductsService,
 } from "../services/productService.js";
 import logger from "../utils/logger.js";
 
@@ -103,6 +104,28 @@ export const getAllProducts = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+export const searchProducts = async (req, res) => {
+  logger.info("🔎 Product search request", {
+    query: req.query,
+    ip: req.ip,
+  });
+
+  try {
+    const { q = "", page = 1, limit = 20 } = req.query;
+    const result = await searchProductsService(q, {
+      page: parseInt(page),
+      limit: parseInt(limit),
+    });
+
+    res.status(200).json(result);
+  } catch (error) {
+    logger.error("❌ Product search failed", {
+      error: error.message,
+    });
+    res.status(500).json({ message: "Search failed" });
   }
 };
 

@@ -3,6 +3,7 @@ import {
   getSellerShop,
   getAllProducts,
   getProductsBySubcategory,
+  searchProducts,
   getAllCategories,
   getProductById,
   createProduct,
@@ -16,6 +17,9 @@ router.get("/shop/:sellerId", getSellerShop);
 
 // Get all products (scraped + seller products)
 router.get("/", getAllProducts);
+
+// Full text search over products
+router.get("/search", searchProducts);
 
 // Get products by subcategory (scraped + seller products)
 router.get("/subcategory/:subcategory", getProductsBySubcategory);
