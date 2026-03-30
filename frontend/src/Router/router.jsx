@@ -17,6 +17,7 @@ import ShopDetailsPage from "../pages/Seller/ShopDetails/ShopDetailsPage";
 import ShopOrder from "../pages/Seller/ShopOrder/ShopOrder";
 import ProductsPage from "../pages/Seller/Products/ProductsPage";
 import StatsPage from "../pages/Seller/Stats/StatsPage";
+import ConnectPage from "../pages/Connect/ConnectPage";
 import App from "../App";
 
 const AppRouter = () => (
@@ -30,6 +31,7 @@ const AppRouter = () => (
         <Route path="reset-password" element={<ResetPasswordPage />} />
         <Route path="subcategory/:subcategory" element={<SubcategoryPage />} />
         <Route path="history" element={<History />} />
+        <Route path="connect" element={<ConnectPage />} />
 
         {/* Seller Routes */}
         <Route path="seller/register" element={<ShopDetailsPage />} />

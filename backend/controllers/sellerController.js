@@ -8,6 +8,7 @@ import {
   deleteProductService,
   getSellerStatsService,
   getSellerSalesStatsService,
+  getRegisteredShopsService,
 } from "../services/sellerService.js";
 
 const validateSellerRegistration = (data) => {
@@ -96,6 +97,18 @@ export const getSellerProfile = async (req, res) => {
     if (error.message === "Seller not found") {
       return res.status(404).json({ message: error.message });
     }
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const getRegisteredShops = async (req, res) => {
+  try {
+    const shops = await getRegisteredShopsService();
+    res.status(200).json({
+      shops,
+      total: shops.length,
+    });
+  } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };

@@ -55,3 +55,9 @@ export const getSellerSalesStats = async () => {
   const response = await api.get(`${API_URL}/sales-stats`);
   return response.data;
 };
+
+// Get all registered shops (excludes scraped websites)
+export const getRegisteredShops = async () => {
+  const response = await api.get(`${API_URL}/registered-shops`);
+  return response.data;
+};

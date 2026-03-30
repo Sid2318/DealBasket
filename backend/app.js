@@ -3,13 +3,16 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import http from "http";
 import authRoutes from "./routes/authRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import myHistoryRoutes from "./routes/myHistoryRoutes.js";
 import sellerRoutes from "./routes/sellerRoutes.js";
+import chatRoutes from "./routes/chatRoutes.js";
 import connectDB from "./config/db.js";
 import { scheduleAggregateScraper } from "./services/scraperService.js";
 import logger from "./utils/logger.js";
+import { initializeSocketServer } from "./sockets/chatSocket.js";
 import {
   setupPerformanceMiddleware,
   compressResponse,
@@ -18,6 +21,7 @@ import {
 dotenv.config();
 
 const app = express();
+const server = http.createServer(app);
 
 // CORS configuration for secure cookie handling
 const isDev = process.env.NODE_ENV !== "production";
@@ -123,9 +127,14 @@ const startServer = async () => {
     logger.debug("🏢 Registering seller routes at /seller");
     app.use("/seller", sellerRoutes);
 
+    logger.debug("💬 Registering chat routes at /chat");
+    app.use("/chat", chatRoutes);
+
     logger.info("✅ All routes registered successfully");
 
-    app.listen(PORT, () => {
+    initializeSocketServer(server);
+
+    server.listen(PORT, () => {
       logger.info("🎉 ================================");
       logger.info("🎉 Server started successfully!");
       logger.info(`🎉 Server running on http://localhost:${PORT}`);

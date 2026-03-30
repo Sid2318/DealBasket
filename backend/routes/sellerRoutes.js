@@ -9,10 +9,14 @@ import {
   deleteProduct,
   getSellerStats,
   getSellerSalesStats,
+  getRegisteredShops,
 } from "../controllers/sellerController.js";
 import { protect } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
+
+// Public endpoint for connect page (registered sellers only)
+router.get("/registered-shops", getRegisteredShops);
 
 // Seller registration and profile
 router.post("/register", protect, registerSeller);

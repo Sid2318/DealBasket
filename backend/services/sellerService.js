@@ -51,6 +51,17 @@ export const getSellerProfileService = async (userId) => {
   return seller;
 };
 
+export const getRegisteredShopsService = async () => {
+  const shops = await Seller.find({})
+    .select(
+      "userId shopName shopDescription contactNumber address businessType isVerified createdAt",
+    )
+    .sort({ createdAt: -1 })
+    .lean();
+
+  return shops;
+};
+
 export const updateSellerProfileService = async (userId, updateData) => {
   const seller = await Seller.findOneAndUpdate({ userId }, updateData, {
     new: true,
